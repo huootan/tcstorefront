@@ -4,22 +4,5 @@
   "repository_url": "https://github.com/huootan/tcstorefront",
   "live_pages_url": "https://huootan.github.io/tcstorefront/",
   "legacy_repos_verified_safe": true,
-  "firebase_project_shared": "orderseefoo",
-  "stealth_admin_guide": {
-    "wake_methods": [
-      "1. 於網頁最下方版權宣告文字（© 2026 土城質感店面誠摯出租...）連續點擊 5 次",
-      "2. 鍵盤快捷鍵：按下 Ctrl + Shift + A",
-      "3. 網址列尾端加上 #stealth-admin（例如：https://huootan.github.io/tcstorefront/#stealth-admin）"
-    ],
-    "uid_setup_steps": [
-      "Step 1: 喚醒隱藏後台視窗後，點擊「使用 Google OAuth 驗證登入」。",
-      "Step 2: 登入成功後，畫面會顯示「您的 UID：xxxx...」，點擊即可複製。",
-      "Step 3: 展開後台頂部的「⚙️ Firebase 雲端專案與管理員 UID 白名單設定」，將您的 UID 貼入「管理員專屬 UID 白名單」欄位並點擊儲存，同時可將該 UID 填入 firebase/firestore.rules 與 firebase/storage.rules 的 ['<ADMIN_UID_WHITELIST>'] 中完成雲端雙重鎖定。"
-    ]
-  },
-  "firebase_rules_deployment_guide": {
-    "firestore_rules": "./firebase/firestore.rules",
-    "storage_rules": "./firebase/storage.rules",
-    "note": "與 orderseefoo 專案共用時，請將 gallery_photos 相關 match 區塊合併至 orderseefoo 的 Firestore 與 Storage Rules 中，並將 <ADMIN_UID_WHITELIST> 替換為您登入後取得的真實 UID。"
-  }
+  "production_artifact_isolation": "Enabled (_site directory excludes internal manifests, templates, and rules)"
 }

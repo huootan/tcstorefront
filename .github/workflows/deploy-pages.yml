@@ -27,10 +27,17 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
+      - name: Prepare clean production artifact (Exclude internal metadata & rules)
+        run: |
+          mkdir -p _site
+          cp index.html assets_manifest.json _site/
+          cp -r assets css js locales _site/
+          if [ -f favicon.ico ]; then cp favicon.ico _site/; fi
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: '_site'
 
       - name: Deploy to GitHub Pages
         id: deployment

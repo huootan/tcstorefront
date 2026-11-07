@@ -90,8 +90,58 @@
     return whitelist.includes(user.uid);
   }
 
-  // Dynamically load official Firebase Compat SDKs from Google CDN when needed
-  function loadScript(src) {
+  // Validate image URLs strictly (reject quotes/parens/newlines and enforce relative ./assets/ or https://)
+  function sanitizeImageUrl(url) {
+    if (typeof url !== 'string') return '';
+    const trimmed = url.trim();
+    if (/['"()\\<>`\r\n\t]/.test(trimmed)) return '';
+    if (trimmed.startsWith('./assets/') || trimmed.startsWith('assets/')) {
+      return trimmed.includes('..') ? '' : trimmed;
+    }
+    if (trimmed.startsWith('https://')) {
+      try {
+        const parsed = new URL(trimmed);
+        return parsed.protocol === 'https:' ? parsed.href : '';
+      } catch (e) {
+        return '';
+      }
+    }
+    return '';
+  }
+
+  // Verify binary file header (Magic Bytes) for JPEG, PNG, and WebP
+  async function verifyImageMagicBytes(file) {
+    if (!file || typeof file.slice !== 'function') return false;
+    const buffer = await file.slice(0, 12).arrayBuffer();
+    const bytes = new Uint8Array(buffer);
+    if (bytes.length < 12) return false;
+    // JPEG: FF D8 FF
+    const isJpeg = bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+    // PNG: 89 50 4E 47 0D 0A 1A 0A
+    const isPng =
+      bytes[0] === 0x89 &&
+      bytes[1] === 0x50 &&
+      bytes[2] === 0x4e &&
+      bytes[3] === 0x47 &&
+      bytes[4] === 0x0d &&
+      bytes[5] === 0x0a &&
+      bytes[6] === 0x1a &&
+      bytes[7] === 0x0a;
+    // WebP: "RIFF" (52 49 46 46) at 0..3 and "WEBP" (57 45 42 50) at 8..11
+    const isWebp =
+      bytes[0] === 0x52 &&
+      bytes[1] === 0x49 &&
+      bytes[2] === 0x46 &&
+      bytes[3] === 0x46 &&
+      bytes[8] === 0x57 &&
+      bytes[9] === 0x45 &&
+      bytes[10] === 0x42 &&
+      bytes[11] === 0x50;
+    return isJpeg || isPng || isWebp;
+  }
+
+  // Dynamically load official Firebase Compat SDKs from Google CDN with Subresource Integrity (SRI)
+  function loadScript(src, integrity) {
     return new Promise((resolve, reject) => {
       if (document.querySelector(`script[src="${src}"]`)) {
         resolve();
@@ -99,6 +149,11 @@
       }
       const s = document.createElement('script');
       s.src = src;
+      if (integrity) {
+        s.integrity = integrity;
+        s.crossOrigin = 'anonymous';
+        s.referrerPolicy = 'no-referrer';
+      }
       s.onload = resolve;
       s.onerror = reject;
       document.head.appendChild(s);
@@ -111,10 +166,22 @@
       return false;
     }
 
-    await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
-    await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js');
-    await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js');
-    await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js');
+    await loadScript(
+      'https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js',
+      'sha384-AQ3POAMqIhwS81FrUH95ekxqBZHeP5tG2JfEL3+7GuTtfRLWnrRh32UxwzM+//A9'
+    );
+    await loadScript(
+      'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js',
+      'sha384-TnlRYaR4JYz/lpaGuaiU61PjNberSA4vjLjtF+oRC/IkohkJqnWxw5EmDSOt1vA1'
+    );
+    await loadScript(
+      'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js',
+      'sha384-qn4Jh88HhJA8dplNQyGjOh9OGI4izVhrfj/qIFgaKcdgOE06pXqIKGlsCILZcLAC'
+    );
+    await loadScript(
+      'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js',
+      'sha384-6I0gWsz4FIAr30c0TxIxJnPQuJiZ1FfILdZrgJdjxTH3R8dgPGTvexbyqTvReV6Z'
+    );
 
     if (!window.firebase) return false;
 
@@ -427,6 +494,16 @@
     const emailSpan = document.getElementById('adminUserEmail');
     const uidCode = document.getElementById('adminUserUid');
     const badge = document.getElementById('adminWhitelistBadge');
+    const workspace = document.getElementById('adminProtectedWorkspace');
+    const authorized = isUserAuthorizedAdmin(currentUser, cfg);
+
+    if (workspace) {
+      if (authorized) {
+        workspace.classList.remove('opacity-50', 'pointer-events-none');
+      } else {
+        workspace.classList.add('opacity-50', 'pointer-events-none');
+      }
+    }
 
     if (currentUser) {
       if (outView) outView.classList.add('hidden');
@@ -434,7 +511,6 @@
       if (emailSpan) emailSpan.textContent = `${currentUser.email || 'N/A'} (email_verified: ${currentUser.emailVerified})`;
       if (uidCode) uidCode.textContent = currentUser.uid;
 
-      const authorized = isUserAuthorizedAdmin(currentUser, cfg);
       if (badge) {
         if (authorized) {
           badge.className = 'text-[11px] text-emerald-400 font-bold';
@@ -469,7 +545,7 @@
       left.className = 'flex items-center gap-3';
 
       const thumb = document.createElement('img');
-      thumb.src = photo.src;
+      thumb.src = sanitizeImageUrl(photo.src);
       thumb.alt = photo.title_zh || '';
       thumb.className = 'w-16 h-12 object-cover border border-neutral-800 shrink-0';
 
@@ -522,6 +598,11 @@
   }
 
   function movePhotoOrder(index, direction) {
+    const cfg = getRuntimeConfig();
+    if (!isUserAuthorizedAdmin(currentUser, cfg)) {
+      showAdminAlert('拒絕存取：請先通過 Firebase Auth 驗證且確認 UID 已列入白名單！', true);
+      return;
+    }
     if (!window.TCStorefrontGallery) return;
     const list = window.TCStorefrontGallery.getPhotos();
     const targetIdx = index + direction;
@@ -544,6 +625,11 @@
   }
 
   function openDeleteConfirmModal(photo) {
+    const cfg = getRuntimeConfig();
+    if (!isUserAuthorizedAdmin(currentUser, cfg)) {
+      showAdminAlert('拒絕存取：請先通過 Firebase Auth 驗證且確認 UID 已列入白名單！', true);
+      return;
+    }
     pendingDeletePhoto = photo;
     const modal = document.getElementById('deleteConfirmModal');
     const titleBox = document.getElementById('deleteConfirmPhotoTitle');
@@ -563,16 +649,16 @@
     if (!pendingDeletePhoto || !window.TCStorefrontGallery) return;
     const cfg = getRuntimeConfig();
 
-    // If cloud Firebase is configured, enforce strict admin UID check & sync deletion to Cloud Storage + Firestore
+    if (!isUserAuthorizedAdmin(currentUser, cfg)) {
+      closeDeleteConfirmModal();
+      showAdminAlert(
+        '拒絕存取：刪除照片必須先通過 Firebase Auth 驗證，且您的 UID 必須在 ADMIN_UID_WHITELIST 白名單內！',
+        true
+      );
+      return;
+    }
+
     if (cfg.apiKey && cfg.projectId) {
-      if (!isUserAuthorizedAdmin(currentUser, cfg)) {
-        closeDeleteConfirmModal();
-        showAdminAlert(
-          '拒絕存取：刪除雲端照片必須先通過 Firebase Auth 驗證，且您的 UID 必須在 ADMIN_UID_WHITELIST 白名單內！',
-          true
-        );
-        return;
-      }
       try {
         if (firebaseStorage && pendingDeletePhoto.storagePath) {
           await firebaseStorage.ref(pendingDeletePhoto.storagePath).delete();
@@ -724,6 +810,17 @@
           return;
         }
 
+        // 2.5. Strict Binary Magic Bytes verification (JPEG / PNG / WebP signature)
+        const validSignature = await verifyImageMagicBytes(file);
+        if (!validSignature) {
+          fileInput.value = '';
+          showAdminAlert(
+            '資安攔截：檔案二進位標頭 (Magic Bytes) 驗證失敗！禁止偽造副檔名之非圖檔上傳。',
+            true
+          );
+          return;
+        }
+
         // 3. Sanitize filename against Path Traversal & XSS
         sanitizedUploadFileName = sanitizeFileName(file.name);
 
@@ -837,6 +934,11 @@
     const resetBtn = document.getElementById('resetDefaultPhotosBtn');
     if (resetBtn) {
       resetBtn.addEventListener('click', () => {
+        const cfg = getRuntimeConfig();
+        if (!isUserAuthorizedAdmin(currentUser, cfg)) {
+          showAdminAlert('拒絕存取：請先通過 Firebase Auth 驗證且確認 UID 已列入白名單！', true);
+          return;
+        }
         if (!window.TCStorefrontGallery) return;
         const defaults = window.TCStorefrontGallery.getDefaultPhotos();
         try {

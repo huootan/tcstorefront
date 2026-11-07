@@ -1,24 +1,37 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Helper function: Strict Admin Verification (Auth + Email Verified + UID Whitelist)
+    // Helper function: Strict Admin Verification (Auth + Email Verified + Real Admin UID Whitelist)
     function isAuthorizedAdmin() {
       return request.auth != null
         && request.auth.token.email_verified == true
-        && request.auth.uid in ['<ADMIN_UID_WHITELIST>'];
+        && request.auth.uid in ['GxxxNnuuMTbRN16P5Qzvl8nlJzC3'];
     }
 
-    // Helper function: Validate gallery photo document schema
+    // Helper function: Validate gallery photo document schema, strict field whitelist, types, and length limits
     function isValidPhotoDocument() {
-      return request.resource.data.keys().hasAll(['src', 'category', 'title_zh', 'title_en', 'order'])
-        && request.resource.data.src is string
-        && request.resource.data.src.size() > 0
-        && request.resource.data.src.size() <= 1024
-        && request.resource.data.category in ['interior', 'exterior']
-        && request.resource.data.title_zh is string
-        && request.resource.data.title_zh.size() <= 200
-        && request.resource.data.title_en is string
-        && request.resource.data.title_en.size() <= 200;
+      let data = request.resource.data;
+      let allowedKeys = [
+        'id', 'order', 'src', 'storagePath', 'category',
+        'tag_zh', 'tag_en', 'title_zh', 'title_en',
+        'desc_zh', 'desc_en', 'updatedAt', 'uploadedByUid'
+      ];
+      return data.keys().hasAll(['src', 'category', 'title_zh', 'title_en', 'order'])
+        && data.keys().hasOnly(allowedKeys)
+        && data.order is int && data.order >= 0 && data.order <= 9999
+        && data.src is string && data.src.size() > 0 && data.src.size() <= 1024
+        && data.src.matches('^(https://firebasestorage\\.googleapis\\.com/|\\./assets/).*')
+        && data.category in ['interior', 'exterior']
+        && data.title_zh is string && data.title_zh.size() <= 120
+        && data.title_en is string && data.title_en.size() <= 120
+        && (!('id' in data) || (data.id is string && data.id.size() <= 64))
+        && (!('tag_zh' in data) || (data.tag_zh is string && data.tag_zh.size() <= 40))
+        && (!('tag_en' in data) || (data.tag_en is string && data.tag_en.size() <= 40))
+        && (!('desc_zh' in data) || (data.desc_zh is string && data.desc_zh.size() <= 200))
+        && (!('desc_en' in data) || (data.desc_en is string && data.desc_en.size() <= 200))
+        && (!('storagePath' in data) || (data.storagePath is string && data.storagePath.size() <= 256))
+        && (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 40))
+        && (!('uploadedByUid' in data) || (data.uploadedByUid == request.auth.uid));
     }
 
     match /gallery_photos/{photoId} {

@@ -1,11 +1,11 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    // Helper function: Strict Admin Verification (Auth + Email Verified + UID Whitelist)
+    // Helper function: Strict Admin Verification (Auth + Email Verified + Real Admin UID Whitelist)
     function isAuthorizedAdmin() {
       return request.auth != null
         && request.auth.token.email_verified == true
-        && request.auth.uid in ['<ADMIN_UID_WHITELIST>'];
+        && request.auth.uid in ['GxxxNnuuMTbRN16P5Qzvl8nlJzC3'];
     }
 
     // Helper function: Enforce strict file size (< 5MB) and image MIME type (jpeg, png, webp)

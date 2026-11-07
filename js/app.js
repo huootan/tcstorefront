@@ -40,12 +40,21 @@
       .replace(/'/g, '&#039;');
   }
 
-  // Validate image URLs (only allow relative ./assets/ or https://)
+  // Validate image URLs strictly (reject quotes/parens/newlines to prevent CSS injection and enforce relative ./assets/ or https://)
   function sanitizeImageUrl(url) {
     if (typeof url !== 'string') return '';
     const trimmed = url.trim();
-    if (trimmed.startsWith('./assets/') || trimmed.startsWith('assets/') || trimmed.startsWith('https://')) {
-      return trimmed;
+    if (/['"()\\<>`\r\n\t]/.test(trimmed)) return '';
+    if (trimmed.startsWith('./assets/') || trimmed.startsWith('assets/')) {
+      return trimmed.includes('..') ? '' : trimmed;
+    }
+    if (trimmed.startsWith('https://')) {
+      try {
+        const parsed = new URL(trimmed);
+        return parsed.protocol === 'https:' ? parsed.href : '';
+      } catch (e) {
+        return '';
+      }
     }
     return '';
   }
@@ -440,7 +449,12 @@
       if (cachedCustom) {
         const parsed = JSON.parse(cachedCustom);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          activeGalleryPhotos = parsed;
+          const validCached = parsed.filter(
+            (p) => p && typeof p === 'object' && sanitizeImageUrl(p.src) !== ''
+          );
+          if (validCached.length > 0) {
+            activeGalleryPhotos = validCached;
+          }
         }
       }
     } catch (e) {}
