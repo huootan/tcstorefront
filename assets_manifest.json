@@ -1,0 +1,117 @@
+{
+  "version": "1.0",
+  "updated_at": "2026-11-07T18:54:00+08:00",
+  "hero_background": "./assets/initial_photos/p3.jpg",
+  "floor_plan_image": "./assets/initial_photos/p1.jpg",
+  "transit_maps": [
+    {
+      "id": "transit_lg10",
+      "src": "./assets/initial_photos/中正國中站LG10.png",
+      "title_zh": "未來萬大線 LG10 中正國中站",
+      "title_en": "Future Wanda MRT Line LG10 Station",
+      "desc_zh": "步行即可抵達未來萬大線中正國中站 (LG10)，串聯雙北核心通勤人潮。",
+      "desc_en": "Walking distance to the upcoming Wanda Line LG10 MRT Station, connecting Greater Taipei commuters."
+    },
+    {
+      "id": "transit_highway3",
+      "src": "./assets/initial_photos/國3金城交流道.png",
+      "title_zh": "國道 3 號金城交流道",
+      "title_en": "National Freeway No. 3 Jincheng Interchange",
+      "desc_zh": "快速銜接國道 3 號金城交流道，南北物流運輸與跨區來客極致便利。",
+      "desc_en": "Rapid access to National Freeway No. 3 Jincheng Interchange for seamless logistics and regional visitors."
+    }
+  ],
+  "initial_gallery_photos": [
+    {
+      "id": "init_p5",
+      "order": 1,
+      "src": "./assets/initial_photos/p5.jpg",
+      "category": "interior",
+      "tag_zh": "室內看公園視角",
+      "tag_en": "Park View from Inside",
+      "title_zh": "店內往外看落地窗與青山廣場綠意",
+      "title_en": "Interior View Looking Out to Qingshan Park",
+      "desc_zh": "站在挑高 4.6 米室內朝大門拍攝，9 米大面寬採光極佳，開門即見對面青山廣場綠樹。",
+      "desc_en": "Shot from inside the 4.6m high-ceiling space toward the 9m glass entrance facing lush Qingshan Park.",
+      "is_default": true
+    },
+    {
+      "id": "init_p4",
+      "order": 2,
+      "src": "./assets/initial_photos/p4.jpg",
+      "category": "interior",
+      "tag_zh": "挑高 4.6m 室內",
+      "tag_en": "4.6m High Interior",
+      "title_zh": "47.7 坪挑高 4.6 米寬敞方正室內實景",
+      "title_en": "47.7-Ping (157.7 sq.m.) Interior with 4.6m High Ceiling",
+      "desc_zh": "室內縱深約 15 米、格局方正無壓迫感，具備三相電、天然氣與排煙排水管線。",
+      "desc_en": "Approx. 15m deep rectangular layout equipped with 3-phase power, natural gas, exhaust, and drainage.",
+      "is_default": true
+    },
+    {
+      "id": "init_p1",
+      "order": 3,
+      "src": "./assets/initial_photos/p1.jpg",
+      "category": "interior",
+      "tag_zh": "平面尺寸圖",
+      "tag_en": "Floor Plan (cm)",
+      "title_zh": "1F 室內平面尺寸配置圖 (單位：cm)",
+      "title_en": "1F Interior Dimension Floor Plan (Unit: cm)",
+      "desc_zh": "清楚標示青雲路 15M 計畫道路、面寬段 1025cm、室內跨距 960cm 與梯廳機電位置。",
+      "desc_en": "Detailed measurements showing 15M Qingyun Rd., 1025cm frontage span, 960cm interior width & core areas.",
+      "is_default": true
+    },
+    {
+      "id": "init_p2",
+      "order": 4,
+      "src": "./assets/initial_photos/p2.jpg",
+      "category": "exterior",
+      "tag_zh": "對面廣場與停車場",
+      "tag_en": "Park & Parking View",
+      "title_zh": "正對青山廣場公園與對面停車場視角",
+      "title_en": "Directly Across from Qingshan Park & Parking Lots",
+      "desc_zh": "店面正對面即為綠意廣場與停車場方向（機車停車場 20m、汽車停車場 30m），顧客停車免煩惱。",
+      "desc_en": "Facing green plaza and public parking (scooter lot 20m, car park 30m away) for effortless customer visits.",
+      "is_default": true
+    },
+    {
+      "id": "init_p3",
+      "order": 5,
+      "src": "./assets/initial_photos/p3.jpg",
+      "category": "exterior",
+      "tag_zh": "建築外觀與公車站",
+      "tag_en": "Facade & Bus Stop",
+      "title_zh": "新成屋大樓氣派外觀與門口公車站牌",
+      "title_en": "Modern Building Facade & Bus Stop at Doorstep",
+      "desc_zh": "位於青雲路 341 號 1F（竑實想樂社區），門口即有公車候車亭直達捷運海山站。",
+      "desc_en": "1F, No. 341, Qingyun Rd. with a bus shelter right in front connecting directly to Haishan MRT Station.",
+      "is_default": true
+    },
+    {
+      "id": "init_p6",
+      "order": 6,
+      "src": "./assets/initial_photos/p6.jpg",
+      "category": "exterior",
+      "tag_zh": "9米大面寬門面",
+      "tag_en": "9m Storefront",
+      "title_zh": "大面寬門市招牌視覺與商業氛圍",
+      "title_en": "High-Visibility Storefront Signage & Commercial Vibe",
+      "desc_zh": "9 米大面寬加上挑高門面，品牌招牌醒目大器，路過車流與公園人潮一眼聚焦。",
+      "desc_en": "Commanding 9m frontage ensures maximum brand exposure to passing traffic and park visitors.",
+      "is_default": true
+    },
+    {
+      "id": "init_p7",
+      "order": 7,
+      "src": "./assets/initial_photos/p7.jpg",
+      "category": "exterior",
+      "tag_zh": "門前人行道實景",
+      "tag_en": "Pedestrian Walkway",
+      "title_zh": "門前綠蔭人行步道與公車候車動線",
+      "title_en": "Tree-Lined Pedestrian Walkway in Front of Store",
+      "desc_zh": "緊鄰清水成熟商圈與土城暫緩重劃區交界，退縮綠蔭人行道舒適寬敞。",
+      "desc_en": "Wide, welcoming setback sidewalk at the junction of Qingshui commercial district and Tucheng redevelopment zone.",
+      "is_default": true
+    }
+  ]
+}

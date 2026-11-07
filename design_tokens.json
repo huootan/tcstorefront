@@ -1,0 +1,41 @@
+{
+  "status": "completed",
+  "source_git_clean": true,
+  "color_palette": {
+    "background_primary": "#ffffff",
+    "background_secondary": "#fafafa",
+    "background_dark": "#171717",
+    "background_darker": "#0a0a0a",
+    "text_primary": "#171717",
+    "text_secondary": "#737373",
+    "text_muted": "#a3a3a3",
+    "border_subtle": "#e5e5e5",
+    "border_light": "#f5f5f5",
+    "accent_gold": "#d97706",
+    "accent_emerald": "#059669",
+    "line_green": "#06C755"
+  },
+  "typography": {
+    "font_family_sans": "'Inter', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif",
+    "heading_weight": "300",
+    "body_weight": "300",
+    "emphasis_weight": "500",
+    "letter_spacing_wide": "0.1em",
+    "letter_spacing_widest": "0.25em"
+  },
+  "responsive_breakpoints": {
+    "sm": "640px",
+    "md": "768px",
+    "lg": "1024px",
+    "xl": "1280px"
+  },
+  "aesthetic_features": [
+    "Transparent-to-white glassmorphic navbar on scroll",
+    "Full-screen architectural hero with subtle dark overlay and tracking-[0.3em] typography",
+    "Editorial split-layout for The Space & Specifications with thin horizontal dividers",
+    "Subtle grayscale-[15%] to full-color hover transitions with 700ms smooth scaling",
+    "Minimalist 1px stroke icons for Advantages section",
+    "Luxury dark contact card with embedded QR code and stealth admin gesture in footer"
+  ],
+  "dom_skeleton_path": "./dist_staging/layout_template.html"
+}

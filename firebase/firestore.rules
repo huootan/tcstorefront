@@ -1,0 +1,38 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function: Strict Admin Verification (Auth + Email Verified + UID Whitelist)
+    function isAuthorizedAdmin() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.uid in ['<ADMIN_UID_WHITELIST>'];
+    }
+
+    // Helper function: Validate gallery photo document schema
+    function isValidPhotoDocument() {
+      return request.resource.data.keys().hasAll(['src', 'category', 'title_zh', 'title_en', 'order'])
+        && request.resource.data.src is string
+        && request.resource.data.src.size() > 0
+        && request.resource.data.src.size() <= 1024
+        && request.resource.data.category in ['interior', 'exterior']
+        && request.resource.data.title_zh is string
+        && request.resource.data.title_zh.size() <= 200
+        && request.resource.data.title_en is string
+        && request.resource.data.title_en.size() <= 200;
+    }
+
+    match /gallery_photos/{photoId} {
+      // Public visitors can read gallery photos
+      allow read: if true;
+
+      // Only verified whitelisted admins can create, update, or delete gallery photos
+      allow create, update: if isAuthorizedAdmin() && isValidPhotoDocument();
+      allow delete: if isAuthorizedAdmin();
+    }
+
+    // Default deny all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

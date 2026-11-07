@@ -1,0 +1,76 @@
+{
+  "status": "completed",
+  "source_git_clean": true,
+  "property_specs": {
+    "address": {
+      "zh_TW": "新北市土城區青雲路 341 號 1F",
+      "en_US": "1F, No. 341, Qingyun Rd., Tucheng Dist., New Taipei City",
+      "community_zh": "竑實想樂社區（屋齡約 3 年，正對青山廣場公園）",
+      "community_en": "Modern 3-year-old building, directly facing Qingshan Plaza Park",
+      "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E6%96%B0%E5%8C%97%E5%B8%82%E5%9C%9F%E5%9F%8E%E5%8D%80%E9%9D%92%E9%9B%B2%E8%B7%AF341%E8%99%9F"
+    },
+    "dimensions": {
+      "gross_area_ping": 80,
+      "gross_area_sqm": 264.5,
+      "gross_area_sqft": 2846,
+      "net_interior_ping": 47.7,
+      "net_interior_sqm": 157.7,
+      "net_interior_sqft": 1697,
+      "frontage_width_m": 9,
+      "frontage_span_cm": 1025,
+      "interior_clear_width_cm": 960,
+      "depth_m": 15,
+      "ceiling_height_m": 4.6,
+      "zoning_permit_code": "B-3",
+      "zoning_permit_zh": "一般零售業（B-3 類）使用執照，可正式辦理營業登記",
+      "zoning_permit_en": "B-3 General Retail Occupancy Permit (Official business registration ready)"
+    },
+    "long_term_lease": {
+      "monthly_rent_twd": 120000,
+      "tax_included": true,
+      "management_fee_included": true,
+      "estimated_monthly_management_fee_twd": 8000,
+      "effective_net_rent_twd": 112000,
+      "deposit_months": 2,
+      "deposit_amount_twd": 240000,
+      "incentive_lease_years": 5,
+      "rent_free_fit_out_months": 3,
+      "rent_free_savings_twd": 360000
+    },
+    "short_term_options": {
+      "pop_up_1_to_3_months_monthly_twd": 180000,
+      "single_day_event_daily_twd": 10000,
+      "subdivision_co_lease_available": true,
+      "subdivision_unit_ping_approx": "23-24",
+      "subdivision_unit_width_m_approx": 4.5
+    },
+    "facilities": {
+      "three_phase_power": true,
+      "natural_gas": true,
+      "exhaust_and_drainage": true,
+      "dedicated_loading_zone": true
+    },
+    "parking_and_transit": {
+      "scooter_parking_distance_m": 20,
+      "car_parking_distance_m": 30,
+      "car_parking_name": "青山汽車停車場 (Qingshan Car Park)",
+      "bus_stop_at_doorstep": "檳榔科站（直達捷運海山站）",
+      "future_mrt": "萬大線中正國中站 (LG10)",
+      "highway_access": "國道 3 號金城交流道"
+    },
+    "contact_and_collaboration": {
+      "contact_person_zh": "屋主 鄭先生 / 鄭太太",
+      "contact_person_en": "Owner Mr. / Mrs. Cheng",
+      "phone": "0955-599-119",
+      "phone_href": "tel:0955599119",
+      "line_url": "https://line.me/ti/p/aM-a4jS34u",
+      "broker_policy_zh": "屋主自租免仲介費（直客），同時誠摯歡迎商用不動產與房仲夥伴配案帶看",
+      "broker_policy_en": "Direct from Owner (no broker fee for direct tenants); Commercial Real Estate Brokers & Agents warmly welcome for co-brokering"
+    }
+  },
+  "artifact_paths": [
+    "./dist_staging/property_data_schema.json",
+    "./dist_staging/assets_manifest.json",
+    "./dist_staging/assets/initial_photos/"
+  ]
+}

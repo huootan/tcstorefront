@@ -1,0 +1,51 @@
+{
+  "audit_timestamp": "2026-11-07T19:04:00+08:00",
+  "auditor_agent": "qa_security_auditor",
+  "audit_passed": true,
+  "legacy_repos_untouched": true,
+  "legacy_integrity_details": {
+    "storefront_tucheng": {
+      "status": "clean_untouched",
+      "html_sha256": "DE93AC9985F62B5C05251EDB960348ED675DB196E62A6970150F4F38119758DF"
+    },
+    "tucheng_store_rental": {
+      "status": "clean_untouched",
+      "git_status_porcelain": ""
+    }
+  },
+  "security_score": 100,
+  "secops_checks": {
+    "no_hardcoded_passwords_or_keys": true,
+    "stealth_admin_lazy_loaded": true,
+    "admin_uid_whitelist_enforced": true,
+    "email_verified_enforced": true,
+    "upload_mime_restricted_jpeg_png_webp": true,
+    "upload_size_limit_5mb_enforced": true,
+    "stored_xss_escaped_and_dom_safe": true,
+    "secondary_delete_confirmation_modal": true
+  },
+  "i18n_verified": true,
+  "i18n_checks": {
+    "zh_tw_keys_count": 126,
+    "en_us_keys_count": 126,
+    "key_parity_score": 1.0,
+    "simplified_chinese_count": 0,
+    "property_specs_accuracy": {
+      "address": "新北市土城區青雲路 341 號 1F",
+      "gross_ping": 80,
+      "net_ping": 47.7,
+      "width_m": 9,
+      "depth_m": 15,
+      "height_m": 4.6,
+      "permit": "B-3 一般零售業使用執照",
+      "long_term_rent_twd": 120000,
+      "management_fee_twd": 8000,
+      "deposit_months": 2,
+      "rent_free_period": "5 年長約享前 3 個月免租裝潢期",
+      "short_term_monthly_twd": 180000,
+      "single_day_twd": 10000
+    }
+  },
+  "rollback_target": null,
+  "critique_notes": []
+}

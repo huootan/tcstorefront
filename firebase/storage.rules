@@ -1,0 +1,35 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Helper function: Strict Admin Verification (Auth + Email Verified + UID Whitelist)
+    function isAuthorizedAdmin() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.uid in ['<ADMIN_UID_WHITELIST>'];
+    }
+
+    // Helper function: Enforce strict file size (< 5MB) and image MIME type (jpeg, png, webp)
+    function isValidGalleryImage() {
+      return request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/(jpeg|png|webp)');
+    }
+
+    match /gallery_photos/{fileName} {
+      // Public visitors can view storefront gallery images
+      allow read: if true;
+
+      // Only whitelisted admins can upload valid images (< 5MB, jpeg/png/webp)
+      allow create, update: if isAuthorizedAdmin()
+        && isValidGalleryImage()
+        && fileName.matches('^[a-zA-Z0-9_\\-]+\\.(jpg|jpeg|png|webp)$');
+
+      // Only whitelisted admins can delete images
+      allow delete: if isAuthorizedAdmin();
+    }
+
+    // Default deny all other storage paths
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

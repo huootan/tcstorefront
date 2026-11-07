@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n="meta_title">土城質感店面誠摯出租｜青雲路341號1F・9米面寬×4.6米挑高×含稅含管理費</title>
+  <meta name="description" data-i18n="meta_desc" content="新北市土城區青雲路341號1F黃金店面出租。權狀80坪（約264.5平方公尺）、室內實坪47.7坪（約157.7平方公尺），面寬9公尺、縱深15公尺、挑高4.6公尺，B-3一般零售業使用執照。月租120,000元（含稅及每月約8,000元管理費），5年長約享前3個月免租裝潢期，另提供1~3個月短租與單日快閃方案。" />
+  <link rel="icon" href="./favicon.ico" />
+  <!-- Open Graph Metadata -->
+  <meta property="og:title" content="【新北土城重劃區金店面出租】青雲路341號1F・9米大面寬×4.6米挑高" />
+  <meta property="og:description" content="權狀80坪(實47.7坪) / 月租12萬含稅含管理費 / 5年長約享前3個月免租期 / 開門即青山廣場公園，歡迎預約看屋與仲介配案！" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="zh_TW" />
+
+  <!-- Fonts & Tailwind CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <link rel="stylesheet" href="./css/styles.css" />
+
+  <!-- SEO JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "RealEstateListing",
+    "name": "新北土城重劃區大面寬黃金店面出租（青雲路341號1F）",
+    "description": "權狀80坪（264.5平方公尺），室內實坪47.7坪（157.7平方公尺），大面寬9公尺、挑高4.6公尺，B-3一般零售業使照，月租120,000元含稅含管理費。",
+    "offers": {
+      "@type": "Offer",
+      "price": "120000",
+      "priceCurrency": "TWD"
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "土城區",
+      "addressRegion": "新北市",
+      "streetAddress": "青雲路 341 號 1F",
+      "addressCountry": "TW"
+    }
+  }
+  </script>
+</head>
+<body class="min-h-screen bg-white font-sans text-neutral-900 selection:bg-neutral-200 antialiased">
+
+  <!-- Minimalist Sticky Header (tucheng-store-rental aesthetic + Bilingual Capsule) -->
+  <header id="mainHeader" class="header-transparent fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b border-transparent py-5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 flex justify-between items-center gap-3">
+      <a href="#hero" id="brandLink" class="text-sm sm:text-lg md:text-xl tracking-[0.1em] md:tracking-[0.18em] text-white transition-colors shrink-0">
+        <span class="font-bold" data-i18n="brand_bold">土城質感店面</span>
+        <span class="font-light ml-1" data-i18n="brand_light">誠摯出租</span>
+      </a>
+
+      <nav class="flex items-center gap-3 sm:gap-6" aria-label="Primary Navigation">
+        <a href="#space" class="nav-link hidden lg:block text-xs tracking-[0.18em] uppercase text-neutral-200 hover:text-white transition-colors" data-i18n="nav_space">空間與規格</a>
+        <a href="#pricing" class="nav-link hidden lg:block text-xs tracking-[0.18em] uppercase text-neutral-200 hover:text-white transition-colors" data-i18n="nav_pricing">租賃方案</a>
+        <a href="#gallery" class="nav-link hidden md:block text-xs tracking-[0.18em] uppercase text-neutral-200 hover:text-white transition-colors" data-i18n="nav_gallery">實景藝廊</a>
+        <a href="#transportation" class="nav-link hidden xl:block text-xs tracking-[0.18em] uppercase text-neutral-200 hover:text-white transition-colors" data-i18n="nav_transit">優勢與交通</a>
+        <a href="#faq" class="nav-link hidden xl:block text-xs tracking-[0.18em] uppercase text-neutral-200 hover:text-white transition-colors" data-i18n="nav_faq">常見問答</a>
+        <a href="#contact" class="nav-link hidden sm:block text-xs tracking-[0.18em] uppercase text-neutral-200 hover:text-white transition-colors" data-i18n="nav_contact">聯絡我們</a>
+
+        <!-- Bilingual Capsule Switcher (繁中 | EN) -->
+        <div id="langToggleCapsule" class="lang-capsule inline-flex items-center border border-white/40 rounded-full p-0.5 text-xs tracking-wider transition-colors" role="group" aria-label="Language Switcher">
+          <button id="langBtnZh" type="button" data-active="true" class="px-2.5 py-1 rounded-full transition-all duration-200">繁中</button>
+          <button id="langBtnEn" type="button" data-active="false" class="px-2.5 py-1 rounded-full transition-all duration-200">EN</button>
+        </div>
+
+        <a href="tel:0955599119" id="headerCallBtn" class="px-3.5 sm:px-5 py-2 text-xs tracking-widest uppercase border bg-white text-neutral-900 border-white hover:bg-neutral-100 transition-colors shrink-0" data-i18n="nav_call">
+          立即撥打
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- SEO Hidden H1 -->
+    <h1 class="sr-only">新北市土城區青雲路341號1F 金店面出租 權狀80坪 室內47.7坪 9米大面寬 B-3使照 屋主自租</h1>
+
+    <!-- Hero Section (tucheng-store-rental full-screen editorial hero + key highlight metrics) -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-center pt-24 pb-16">
+      <div id="heroBgLayer" class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat">
+        <div class="absolute inset-0 bg-black/50"></div>
+      </div>
+
+      <div class="relative z-10 text-center text-white px-6 w-full max-w-5xl mx-auto flex flex-col items-center mt-6">
+        <p class="text-xs sm:text-sm md:text-base tracking-[0.25em] uppercase mb-6 opacity-90 border-b border-white/40 pb-2.5" data-i18n="hero_eyebrow">
+          新北土城重劃區 · 青雲路 341 號 1F · 稀有釋出
+        </p>
+
+        <h2 class="text-4xl sm:text-6xl lg:text-7xl font-light tracking-wide mb-6 leading-tight">
+          <span data-i18n="hero_title_1">9米大面寬</span><br class="sm:hidden" />
+          <span class="hidden sm:inline"> · </span>
+          <span data-i18n="hero_title_2">黃金旗艦店面</span>
+        </h2>
+
+        <p class="text-sm sm:text-base md:text-lg font-light tracking-wider text-neutral-200 max-w-3xl mb-10" data-i18n="hero_subtitle">
+          月租 NT$ 120,000（已含稅＋含每月約 $8,000 管理費）｜5 年長約享前 3 個月免租裝潢期
+        </p>
+
+        <!-- 4 Architectural Metric Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 w-full mb-10 text-left">
+          <div class="bg-black/45 backdrop-blur-md border border-white/20 p-4 sm:p-5">
+            <div class="text-[11px] tracking-widest uppercase text-neutral-300 mb-1" data-i18n="hero_stat1_label">總坪數 / 室內實坪</div>
+            <div class="text-lg sm:text-xl font-medium text-white tracking-wide" data-i18n="hero_stat1_val">80 坪 / 實 47.7 坪</div>
+            <div class="text-xs text-neutral-300 mt-1 font-light" data-i18n="hero_stat1_sub">約 264.5 m² / 室內 157.7 m²</div>
+          </div>
+          <div class="bg-black/45 backdrop-blur-md border border-amber-400/50 p-4 sm:p-5">
+            <div class="text-[11px] tracking-widest uppercase text-amber-300 mb-1" data-i18n="hero_stat2_label">全包式長租月租</div>
+            <div class="text-lg sm:text-xl font-medium text-amber-300 tracking-wide" data-i18n="hero_stat2_val">NT$ 120,000 / 月</div>
+            <div class="text-xs text-neutral-200 mt-1 font-light" data-i18n="hero_stat2_sub">含稅價・含每月約 $8,000 管理費</div>
+          </div>
+          <div class="bg-black/45 backdrop-blur-md border border-white/20 p-4 sm:p-5">
+            <div class="text-[11px] tracking-widest uppercase text-neutral-300 mb-1" data-i18n="hero_stat3_label">長約裝潢免租期</div>
+            <div class="text-lg sm:text-xl font-medium text-white tracking-wide" data-i18n="hero_stat3_val">前 3 個月免租</div>
+            <div class="text-xs text-neutral-300 mt-1 font-light" data-i18n="hero_stat3_sub">簽約滿 5 年即享・押金 2 個月</div>
+          </div>
+          <div class="bg-black/45 backdrop-blur-md border border-white/20 p-4 sm:p-5">
+            <div class="text-[11px] tracking-widest uppercase text-neutral-300 mb-1" data-i18n="hero_stat4_label">短期快閃 / 單日租</div>
+            <div class="text-lg sm:text-xl font-medium text-white tracking-wide" data-i18n="hero_stat4_val">月 $18萬 / 日 $1萬</div>
+            <div class="text-xs text-neutral-300 mt-1 font-light" data-i18n="hero_stat4_sub">1–3 個月特賣會或單日展演皆可</div>
+          </div>
+        </div>
+
+        <!-- Hero Action Buttons -->
+        <div class="flex flex-wrap items-center justify-center gap-4">
+          <a href="#space" class="group flex items-center gap-3 text-xs sm:text-sm tracking-widest uppercase bg-white text-neutral-900 border border-white px-7 py-4 hover:bg-transparent hover:text-white transition-all duration-300">
+            <span data-i18n="hero_btn_explore">探索空間與規格</span>
+            <span class="group-hover:translate-x-1 transition-transform">→</span>
+          </a>
+          <a href="#pricing" class="text-xs sm:text-sm tracking-widest uppercase bg-transparent border border-white/70 text-white px-7 py-4 hover:bg-white hover:text-neutral-900 transition-all duration-300" data-i18n="hero_btn_plans">
+            查看租賃方案
+          </a>
+          <button id="copySpecHeroBtn" type="button" class="text-xs sm:text-sm tracking-widest uppercase bg-black/50 border border-white/40 text-amber-300 px-6 py-4 hover:bg-white hover:text-neutral-900 transition-all duration-300" data-i18n="hero_btn_copy">
+            複製完整物件規格
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- The Space & Specifications Section (tucheng-store-rental editorial split layout + complete specs) -->
+    <section id="space" class="py-24 lg:py-32 bg-white">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col lg:flex-row gap-16 lg:gap-20 items-start">
+
+        <!-- Left Column: Editorial Intro & 10-Row Complete Specification List -->
+        <article class="w-full lg:w-6/12 flex flex-col justify-center">
+          <p class="text-xs tracking-[0.25em] uppercase text-neutral-400 mb-2" data-i18n="space_en_heading">The Space & Specifications</p>
+          <h2 class="text-3xl lg:text-4xl font-light tracking-wide mb-6 text-neutral-900" data-i18n="space_zh_heading">
+            空間概覽與完整建築規格
+          </h2>
+          <p class="text-neutral-600 leading-relaxed text-base mb-4 font-light" data-i18n="space_intro_p1">
+            位於新北市土城區青雲路 341 號 1F（竑實想樂社區，屋齡約 3 年），緊鄰發展成熟的清水商圈與深具潛力的土城重劃區交界。
+          </p>
+          <p class="text-neutral-600 leading-relaxed text-base mb-8 font-light" data-i18n="space_intro_p2">
+            開門即見青山廣場公園，擁有約 9 公尺超大面寬與 4.6 公尺挑高氣勢，為您的品牌自帶自然集客力。具備三相電、天然氣、排煙排水系統與專屬卸貨區，正適合連鎖餐飲、大型診所、藥局、超市與零售旗艦店進駐。
+          </p>
+
+          <div class="pt-6 border-t border-neutral-200">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-xs tracking-[0.2em] uppercase text-neutral-500 font-medium" data-i18n="spec_section_label">企業展店評估必備規格表</h3>
+              <span class="text-xs tracking-wider bg-neutral-900 text-white px-3 py-1" data-i18n="spec_badge_ready">可立即遷入・可正式營登</span>
+            </div>
+
+            <ul class="space-y-3.5 text-sm">
+              <li class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline border-b border-neutral-100 pb-3 gap-1">
+                <span class="text-neutral-500 font-light tracking-wider shrink-0" data-i18n="spec_row1_k">門牌地址</span>
+                <span class="text-neutral-900 sm:text-right font-medium" data-i18n="spec_row1_v">新北市土城區青雲路 341 號 1F（正對青山廣場公園）</span>
+              </li>
+              <li class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline border-b border-neutral-100 pb-3 gap-1">
+                <span class="text-neutral-500 font-light tracking-wider shrink-0" data-i18n="spec_row2_k">總坪數（權狀）</span>
+                <span class="text-neutral-900 sm:text-right font-medium" data-i18n="spec_row2_v">80 坪（約 264.5 平方公尺 / 2,846 sq.ft.）</span>
+              </li>
+              <li class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline border-b border-neutral-100 pb-3 gap-1">
+                <span class="text-neutral-500 font-light tracking-wider shrink-0" data-i18n="spec_row3_k">室內實坪</span>
+                <span class="text-neutral-900 sm:text-right font-medium" data-i18n="spec_row3_v">47.7 坪（約 157.7 平方公尺 / 1,697 sq.ft.，方正無走道浪費）</span>
+              </li>
+              <li class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline border-b border-neutral-100 pb-3 gap-1">
+                <span class="text-neutral-500 font-light tracking-wider shrink-0" data-i18n="spec_row4_k">面寬 × 深度 × 挑高</span>
+                <span class="text-neutral-900 sm:text-right" data-i18n="spec_row4_v">面寬約 9 公尺（圖面總寬 1025cm）× 深度約 15 公尺 × 挑高 4.6 公尺</span>
+              </li>
+              <li class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline border-b border-neutral-100 pb-3 gap-1">
+                <span class="text-neutral-500 font-light tracking-wider shrink-0" data-i18n="spec_row5_k">使用執照用途</span>
+                <span class="text-emerald-700 sm:text-right font-medium" data-i18n="spec_row5_v">B-3 一般零售業使用執照（可正式辦理營業登記）</span>
+              </li>
+              <li class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline border-b border-neutral-100 pb-3 gap-1">
+                <span class="text-neutral-500 font-light tracking-wider shrink-0" data-i18n="spec_row6_k">長租月租金</span>
+                <span class="text-amber-700 sm:text-right font-bold" data-i18n="spec_row6_v">NT$ 120,000 / 月（含稅價＋含每月約 NT$ 8,000 管理費）</span>
+              </li>
+              <li class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline border-b border-neutral-100 pb-3 gap-1">
+                <span class="text-neutral-500 font-light tracking-wider shrink-0" data-i18n="spec_row7_k">押金與免租期</span>
+                <span class="text-neutral-900 sm:text-right" data-i18n="spec_row7_v">押金 2 個月（NT$ 240,000）；5 年長約享前 3 個月免租裝潢期</span>
+              </li>
+              <li class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline border-b border-neutral-100 pb-3 gap-1">
+                <span class="text-neutral-500 font-light tracking-wider shrink-0" data-i18n="spec_row8_k">短租快閃方案</span>
+                <span class="text-neutral-900 sm:text-right font-medium" data-i18n="spec_row8_v">1~3 個月期月租 NT$ 180,000 / 月；單日租 NT$ 10,000 / 日</span>
+              </li>
+              <li class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline border-b border-neutral-100 pb-3 gap-1">
+                <span class="text-neutral-500 font-light tracking-wider shrink-0" data-i18n="spec_row9_k">機電與餐飲硬體</span>
+                <span class="text-neutral-900 sm:text-right" data-i18n="spec_row9_v">三相電、天然氣、排煙排水系統、專屬卸貨區</span>
+              </li>
+              <li class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline pb-2 gap-1">
+                <span class="text-neutral-500 font-light tracking-wider shrink-0" data-i18n="spec_row10_k">合作與聯絡資訊</span>
+                <span class="text-neutral-900 sm:text-right font-medium" data-i18n="spec_row10_v">屋主自租免仲介費，同時歡迎房仲合作配案（聯絡人：鄭先生 / 鄭太太）</span>
+              </li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- Right Column: Stacked Park View & Interactive Floor Plan (Dynamic bound via app.js) -->
+        <div class="w-full lg:w-6/12 flex flex-col gap-8">
+          <!-- Floor Plan Card -->
+          <div class="border border-neutral-200 bg-neutral-50 p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <p class="text-[11px] tracking-[0.2em] uppercase text-neutral-400" data-i18n="fp_card_tag">FLOOR PLAN & DIMENSIONS</p>
+                <h3 class="text-base font-medium text-neutral-900" data-i18n="fp_card_title">1F 室內平面尺寸配置圖（單位：cm）</h3>
+                <p class="text-xs text-neutral-500 font-light mt-0.5" data-i18n="fp_card_sub">臨 15M 計畫道路（青雲路）・點擊圖面可全螢幕放大檢視</p>
+              </div>
+              <button id="openFloorplanBtn" type="button" class="text-xs tracking-wider uppercase border border-neutral-900 bg-neutral-900 text-white px-3.5 py-2 hover:bg-neutral-800 transition shrink-0" data-i18n="fp_zoom_btn">
+                放大平面圖
+              </button>
+            </div>
+
+            <div id="floorplanContainer" class="relative h-[300px] sm:h-[360px] bg-white border border-neutral-200 overflow-hidden cursor-pointer group">
+              <img id="floorplanImg" alt="1F Floor Plan" class="w-full h-full object-contain editorial-img group-hover:scale-[1.02]" />
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-neutral-200 text-xs text-neutral-600 space-y-1 font-light">
+              <div data-i18n="fp_dim_1">• 臨路正面寬度：上方總寬段標示 1025 cm（約 9～10 公尺超大面寬）</div>
+              <div data-i18n="fp_dim_2">• 室內主要跨距：中央主要淨寬 960 cm、上方牆段 725 cm + 540 cm</div>
+              <div data-i18n="fp_dim_3">• 室內縱深尺度：約 15 公尺（右側垂直段 764 cm + 336 cm + 後方機電梯廳區）</div>
+              <div data-i18n="fp_dim_4">• 空間分割彈性：47.7 坪（157.7 m²）具備雙動線與複合經營分割潛力</div>
+            </div>
+          </div>
+
+          <!-- Park & Parking View Card -->
+          <div class="border border-neutral-200 bg-neutral-50 p-5">
+            <p class="text-[11px] tracking-[0.2em] uppercase text-neutral-400" data-i18n="park_card_tag">PARK & PARKING VIEW</p>
+            <h3 class="text-base font-medium text-neutral-900 mb-1" data-i18n="park_card_title">正對青山廣場公園與對面汽機車停車場視角</h3>
+            <p class="text-xs text-neutral-500 font-light mb-3" data-i18n="park_card_sub">距離機車停車場僅 20 公尺、青山汽車停車場僅 30 公尺，顧客來訪停車超便利</p>
+            <div id="parkViewContainer" class="relative h-[260px] sm:h-[300px] bg-neutral-100 overflow-hidden cursor-pointer group">
+              <img id="parkViewImg" alt="Park and Parking View" class="w-full h-full object-cover editorial-img group-hover:scale-105" />
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Multi-Plan Rental Comparison & Cost Calculator Section -->
+    <section id="pricing" class="py-24 lg:py-32 bg-neutral-950 text-white">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="max-w-3xl mb-12">
+          <p class="text-xs tracking-[0.25em] uppercase text-amber-400 mb-2" data-i18n="pricing_en_heading">Leasing Plans & Cost Analysis</p>
+          <h2 class="text-3xl lg:text-4xl font-light tracking-wide mb-4" data-i18n="pricing_zh_heading">
+            透明全包式租金與多元彈性租賃方案
+          </h2>
+          <p class="text-neutral-400 text-sm sm:text-base font-light leading-relaxed" data-i18n="pricing_desc">
+            一般商用地產開價多為「未稅、不含管理費」，簽約時每月往往需額外負擔逾 2 萬元。本物件由屋主直接吸收租賃稅與每月約 8,000 元管理費，並提供長租、短租快閃與分割合租四種彈性方案：
+          </p>
+        </div>
+
+        <!-- 4 Plan Selector Tabs -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+          <button type="button" data-plan="longterm" class="plan-tab border border-white bg-white text-neutral-900 p-5 text-left transition-all">
+            <div class="text-[11px] tracking-[0.2em] uppercase opacity-75 mb-1" data-i18n="tab1_tag">OPTION 01 · 最推薦</div>
+            <div class="text-sm sm:text-base font-medium tracking-wide" data-i18n="tab1_name">長期旗艦進駐 (5年長約優惠)</div>
+          </button>
+          <button type="button" data-plan="shortterm" class="plan-tab border border-neutral-800 bg-neutral-900/60 text-neutral-300 hover:border-neutral-600 p-5 text-left transition-all">
+            <div class="text-[11px] tracking-[0.2em] uppercase text-amber-400 mb-1" data-i18n="tab2_tag">OPTION 02 · 1~3 個月</div>
+            <div class="text-sm sm:text-base font-medium tracking-wide" data-i18n="tab2_name">短期快閃 / 換季特賣會</div>
+          </button>
+          <button type="button" data-plan="daily" class="plan-tab border border-neutral-800 bg-neutral-900/60 text-neutral-300 hover:border-neutral-600 p-5 text-left transition-all">
+            <div class="text-[11px] tracking-[0.2em] uppercase text-amber-400 mb-1" data-i18n="tab3_tag">OPTION 03 · 單日租借</div>
+            <div class="text-sm sm:text-base font-medium tracking-wide" data-i18n="tab3_name">單日快閃 / 活動展演</div>
+          </button>
+          <button type="button" data-plan="split" class="plan-tab border border-neutral-800 bg-neutral-900/60 text-neutral-300 hover:border-neutral-600 p-5 text-left transition-all">
+            <div class="text-[11px] tracking-[0.2em] uppercase text-amber-400 mb-1" data-i18n="tab4_tag">OPTION 04 · 複合經營</div>
+            <div class="text-sm sm:text-base font-medium tracking-wide" data-i18n="tab4_name">微型創業 / 空間分割合租</div>
+          </button>
+        </div>
+
+        <!-- Dynamic Plan Details Panel (Rendered by app.js) -->
+        <div id="planContentPanel" class="border border-neutral-800 bg-neutral-900/80 p-6 sm:p-10"></div>
+      </div>
+    </section>
+
+    <!-- Dynamic Data-Driven Photo Gallery Section (Firestore/Storage + Fallback) -->
+    <section id="gallery" class="py-24 lg:py-32 bg-white">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+          <div>
+            <p class="text-xs tracking-[0.25em] uppercase text-neutral-400 mb-2" data-i18n="gallery_en_heading">Curated Gallery</p>
+            <h2 class="text-3xl lg:text-4xl font-light tracking-wide text-neutral-900" data-i18n="gallery_zh_heading">
+              空間實景與周邊環境藝廊
+            </h2>
+            <p class="text-sm text-neutral-500 font-light mt-2" data-i18n="gallery_desc">
+              點擊任一實景照片可開啟高畫質燈箱檢視細節。
+            </p>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <button type="button" data-filter="all" class="gallery-filter border border-neutral-900 bg-neutral-900 text-white text-xs tracking-widest uppercase px-4 py-2.5 transition" data-i18n="filter_all">全部實景</button>
+            <button type="button" data-filter="interior" class="gallery-filter border border-neutral-300 bg-white text-neutral-700 hover:border-neutral-900 text-xs tracking-widest uppercase px-4 py-2.5 transition" data-i18n="filter_interior">室內與平面圖</button>
+            <button type="button" data-filter="exterior" class="gallery-filter border border-neutral-300 bg-white text-neutral-700 hover:border-neutral-900 text-xs tracking-widest uppercase px-4 py-2.5 transition" data-i18n="filter_exterior">外觀、公園與停車場</button>
+          </div>
+        </div>
+
+        <!-- Dynamic Gallery Grid Container (Zero hardcoded images; populated dynamically via app.js) -->
+        <div id="galleryGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+      </div>
+    </section>
+
+    <!-- Four Key Advantages Section (tucheng-store-rental minimalist icon grid) -->
+    <section id="advantages" class="py-24 lg:py-32 bg-neutral-50">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="text-center mb-20">
+          <p class="text-xs tracking-[0.25em] uppercase text-neutral-400 mb-2" data-i18n="adv_en_heading">Key Advantages</p>
+          <h2 class="text-3xl lg:text-4xl font-light tracking-wide text-neutral-900" data-i18n="adv_zh_heading">
+            四大核心商業優勢
+          </h2>
+          <div class="mt-4 w-12 h-[1px] bg-neutral-400 mx-auto"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-16">
+          <article class="flex flex-col items-center text-center group">
+            <svg class="w-9 h-9 text-neutral-400 mb-6 group-hover:text-neutral-900 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            <h3 class="text-lg tracking-widest mb-4 font-normal text-neutral-800" data-i18n="adv1_title">新舊生活圈交界</h3>
+            <p class="text-neutral-500 font-light leading-relaxed text-sm" data-i18n="adv1_desc">
+              緊鄰成熟清水商圈與土城重劃區交界，同時匯聚穩定在地客源與新興高消費家庭人口。
+            </p>
+          </article>
+
+          <article class="flex flex-col items-center text-center group">
+            <svg class="w-9 h-9 text-neutral-400 mb-6 group-hover:text-neutral-900 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
+              <circle cx="7" cy="17" r="2"/>
+              <path d="M9 17h6"/>
+              <circle cx="17" cy="17" r="2"/>
+            </svg>
+            <h3 class="text-lg tracking-widest mb-4 font-normal text-neutral-800" data-i18n="adv2_title">停車極致便利</h3>
+            <p class="text-neutral-500 font-light leading-relaxed text-sm" data-i18n="adv2_desc">
+              青山汽車停車場僅 30 公尺，機車停車場僅 20 公尺，看診、用餐、採買完全免找車位。
+            </p>
+          </article>
+
+          <article class="flex flex-col items-center text-center group">
+            <svg class="w-9 h-9 text-neutral-400 mb-6 group-hover:text-neutral-900 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m17 14 3 3.3a1 1 0 0 1-.7 1.7H4.7a1 1 0 0 1-.7-1.7L7 14h-.3a1 1 0 0 1-.7-1.7L9 9h-.2A1 1 0 0 1 8 7.3L12 3l4 4.3a1 1 0 0 1-.8 1.7H15l3 3.3a1 1 0 0 1-.7 1.7H17Z"/>
+              <path d="M12 22v-3"/>
+            </svg>
+            <h3 class="text-lg tracking-widest mb-4 font-normal text-neutral-800" data-i18n="adv3_title">開門即青山廣場</h3>
+            <p class="text-neutral-500 font-light leading-relaxed text-sm" data-i18n="adv3_desc">
+              正對青山廣場綠意公園，9 公尺落地窗視野開闊，平日與假日休閒人潮自帶天然集客力。
+            </p>
+          </article>
+
+          <article class="flex flex-col items-center text-center group">
+            <svg class="w-9 h-9 text-neutral-400 mb-6 group-hover:text-neutral-900 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 6 2 7"/>
+              <path d="M10 6h4"/>
+              <path d="m22 7-2-1"/>
+              <rect width="16" height="16" x="4" y="3" rx="2"/>
+              <path d="M4 11h16"/>
+              <path d="M12 3v8"/>
+              <path d="m8 19-2 3"/>
+              <path d="m18 22-2-3"/>
+              <path d="M8 15h.01"/>
+              <path d="M16 15h.01"/>
+            </svg>
+            <h3 class="text-lg tracking-widest mb-4 font-normal text-neutral-800" data-i18n="adv4_title">大眾運輸與物流</h3>
+            <p class="text-neutral-500 font-light leading-relaxed text-sm" data-i18n="adv4_desc">
+              門口即有公車站牌直達捷運海山站，步行可達未來萬大線 LG10 站，快速銜接國3金城交流道。
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Transportation Section -->
+    <section id="transportation" class="py-24 lg:py-32 bg-white">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col lg:flex-row gap-16 lg:gap-24 items-center">
+        <article class="w-full lg:w-5/12 flex flex-col justify-center">
+          <p class="text-xs tracking-[0.25em] uppercase text-neutral-400 mb-2" data-i18n="trans_en_heading">Transportation Hub</p>
+          <h2 class="text-3xl lg:text-4xl font-light tracking-wide mb-8 text-neutral-900" data-i18n="trans_zh_heading">
+            雙北核心交通樞紐
+          </h2>
+          <p class="text-neutral-700 leading-loose text-lg mb-4 font-light" data-i18n="trans_p1">
+            無與倫比的軌道與高速公路雙重優勢。
+          </p>
+          <p class="text-neutral-500 leading-loose text-base font-light" data-i18n="trans_p2">
+            店面門口即設公車候車亭（檳榔科站）直達板南線捷運海山站；步行即可抵達即將通車的捷運萬大線中正國中站 (LG10)，並迅速串聯國道 3 號金城交流道。無論是雙北跨區通勤客群，或連鎖品牌日常物流配送，皆具備最高效率。
+          </p>
+        </article>
+
+        <!-- Dynamic Transit Maps Container (Rendered via app.js from assets_manifest.json) -->
+        <div id="transitMapsContainer" class="w-full lg:w-7/12 flex flex-col gap-6"></div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-24 lg:py-32 bg-neutral-50 border-t border-neutral-200">
+      <div class="max-w-4xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <p class="text-xs tracking-[0.25em] uppercase text-neutral-400 mb-2" data-i18n="faq_en_heading">Frequently Asked Questions</p>
+          <h2 class="text-3xl lg:text-4xl font-light tracking-wide text-neutral-900" data-i18n="faq_zh_heading">
+            承租常見問題解答
+          </h2>
+          <div class="mt-4 w-12 h-[1px] bg-neutral-400 mx-auto"></div>
+        </div>
+
+        <div class="space-y-6">
+          <div class="bg-white border border-neutral-200 p-6 sm:p-8">
+            <h3 class="text-base sm:text-lg font-medium text-neutral-900 mb-3" data-i18n="faq1_q">Q1：月租 120,000 元是否已包含稅金與管理費？可以辦理營業登記嗎？</h3>
+            <p class="text-sm text-neutral-600 font-light leading-relaxed" data-i18n="faq1_a">
+              全部包含，且可正式辦理營業登記！月租 NT$ 120,000 為含稅價，並已包含每月約 NT$ 8,000 元的社區管理費（扣除管理費後實質月租約 11.2 萬元）。使用執照為 B-3 一般零售業，餐飲、診所、藥局、超市、零售門市與辦公室皆可合法進駐。
+            </p>
+          </div>
+
+          <div class="bg-white border border-neutral-200 p-6 sm:p-8">
+            <h3 class="text-base sm:text-lg font-medium text-neutral-900 mb-3" data-i18n="faq2_q">Q2：「5 年長約享前 3 個月免租裝潢期」與押金條件為何？</h3>
+            <p class="text-sm text-neutral-600 font-light leading-relaxed" data-i18n="faq2_a">
+              長租方案押金為 2 個月（NT$ 240,000）。只要簽訂 5 年長期租約，屋主即提供前 3 個月免租裝潢期（直接為企業節省 NT$ 360,000 裝修期間租金支出），讓您的團隊從容完成室內設計、設備進場與開幕籌備。
+            </p>
+          </div>
+
+          <div class="bg-white border border-neutral-200 p-6 sm:p-8">
+            <h3 class="text-base sm:text-lg font-medium text-neutral-900 mb-3" data-i18n="faq3_q">Q3：請問短期快閃店、換季特賣會或單日活動的租金如何計算？</h3>
+            <p class="text-sm text-neutral-600 font-light leading-relaxed" data-i18n="faq3_a">
+              我們非常歡迎短期快閃與活動展演！1~3 個月短期快閃或特賣會方案，月租為 NT$ 180,000 / 月；單日快閃、拍賣、攝影或活動展演方案，單日租金為 NT$ 10,000 / 日。現場具備 9 公尺大面寬、4.6 公尺挑高與專屬卸貨區，進撤場極為便利。
+            </p>
+          </div>
+
+          <div class="bg-white border border-neutral-200 p-6 sm:p-8">
+            <h3 class="text-base sm:text-lg font-medium text-neutral-900 mb-3" data-i18n="faq4_q">Q4：請問接受商用不動產或房仲夥伴合作配案嗎？</h3>
+            <p class="text-sm text-neutral-600 font-light leading-relaxed" data-i18n="faq4_a">
+              誠摯歡迎房仲夥伴合作配案！屋主對直接承租之企業免收仲介費，同時非常歡迎各大商用不動產與房仲經紀人帶看配案，請直接透過電話或 LINE 聯繫屋主鄭先生 / 鄭太太。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section (tucheng-store-rental luxury dark card + embedded LINE QR code) -->
+    <section id="contact" class="py-32 bg-neutral-900 text-white">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-12">
+          <p class="text-xs tracking-[0.25em] uppercase text-neutral-400 mb-2" data-i18n="contact_en_heading">Contact & Viewing</p>
+          <h2 class="text-3xl lg:text-4xl font-light tracking-wide mb-4" data-i18n="contact_zh_heading">
+            預約現場看屋與房仲合作
+          </h2>
+          <p class="text-amber-400 tracking-[0.15em] uppercase text-xs sm:text-sm" data-i18n="contact_subtitle">
+            【 屋主自租 · 歡迎連鎖企業直洽 & 房仲夥伴合作配案 】
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 border border-neutral-800 bg-neutral-950/60">
+          <!-- Left Contact Details -->
+          <address class="lg:col-span-7 p-8 sm:p-12 lg:p-14 flex flex-col justify-between not-italic border-b lg:border-b-0 lg:border-r border-neutral-800">
+            <div>
+              <h3 class="text-2xl font-light mb-2 text-white" data-i18n="contact_owner_title">屋主 鄭先生 / 鄭太太</h3>
+              <p class="text-neutral-400 font-light mb-8 text-sm" data-i18n="contact_owner_role">Owner & Property Manager｜新北市土城區青雲路 341 號 1F</p>
+
+              <a href="tel:0955599119" class="inline-block text-3xl sm:text-5xl font-light tracking-widest mb-10 text-white hover:text-amber-400 transition-colors">
+                0955-599-119
+              </a>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <a href="https://line.me/ti/p/aM-a4jS34u" target="_blank" rel="noopener noreferrer" class="border border-white bg-white text-neutral-900 py-4 px-5 tracking-widest text-xs sm:text-sm font-medium hover:bg-neutral-200 transition-colors text-center uppercase" data-i18n="contact_btn_line">
+                加入 LINE 聯繫屋主
+              </a>
+              <a href="tel:0955599119" class="border border-neutral-700 bg-transparent text-white py-4 px-5 tracking-widest text-xs sm:text-sm hover:bg-neutral-800 transition-colors text-center uppercase" data-i18n="contact_btn_call">
+                立即撥打 0955-599-119
+              </a>
+              <a href="https://www.google.com/maps/search/?api=1&query=%E6%96%B0%E5%8C%97%E5%B8%82%E5%9C%9F%E5%9F%8E%E5%8D%80%E9%9D%92%E9%9B%B2%E8%B7%AF341%E8%99%9F" target="_blank" rel="noopener noreferrer" class="border border-neutral-800 bg-neutral-900 text-neutral-300 py-3.5 px-5 tracking-widest text-xs hover:border-neutral-600 hover:text-white transition-colors text-center uppercase" data-i18n="contact_btn_map">
+                開啟 Google Maps 導航
+              </a>
+              <button id="copySpecFooterBtn" type="button" class="border border-neutral-800 bg-neutral-900 text-amber-300 py-3.5 px-5 tracking-widest text-xs hover:border-amber-400 transition-colors text-center uppercase" data-i18n="contact_btn_copy">
+                複製完整招租規格
+              </button>
+            </div>
+          </address>
+
+          <!-- Right QR Code Channel -->
+          <div class="lg:col-span-5 p-8 sm:p-12 flex flex-col items-center justify-center text-center bg-neutral-950/90">
+            <span class="text-[11px] tracking-[0.25em] uppercase text-emerald-400 mb-2" data-i18n="qr_tag">LINE DIRECT CHANNEL</span>
+            <h4 class="text-lg font-light text-white mb-2" data-i18n="qr_title">掃描 QR Code 立即加 LINE</h4>
+            <p class="text-xs text-neutral-400 font-light mb-6 max-w-xs" data-i18n="qr_desc">
+              手機點擊按鈕或使用相機掃碼，直接與屋主鄭先生 / 鄭太太聯繫看屋或配案
+            </p>
+            <div id="lineQrContainer" class="p-4 bg-white rounded-sm shadow-lg flex items-center justify-center"></div>
+            <a href="https://line.me/ti/p/aM-a4jS34u" target="_blank" rel="noopener noreferrer" class="mt-4 text-xs font-mono text-neutral-400 hover:text-white underline break-all">
+              https://line.me/ti/p/aM-a4jS34u
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer with Stealth Admin Trigger (5-click on copyright notice) -->
+  <footer class="bg-neutral-950 text-neutral-500 py-12 text-center text-xs tracking-widest border-t border-neutral-900 select-none">
+    <div class="max-w-7xl mx-auto px-6 space-y-2">
+      <p id="stealthCopyrightTrigger" class="cursor-default transition-colors" data-i18n="footer_copyright">
+        © 2026 土城質感店面誠摯出租（新北市土城區青雲路 341 號 1F）. ALL RIGHTS RESERVED.
+      </p>
+      <p class="text-neutral-600 text-[11px]" data-i18n="footer_sub">
+        屋主鄭先生 / 鄭太太：0955-599-119 ｜ 歡迎企業直洽與房仲合作
+      </p>
+    </div>
+  </footer>
+
+  <!-- Lightbox Modal for Floor Plan & Gallery Photos -->
+  <div id="lightboxModal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="relative max-w-5xl w-full bg-neutral-950 border border-neutral-800 shadow-2xl overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-neutral-800 text-white">
+        <div id="lightboxCaption" class="font-light tracking-wider text-sm sm:text-base"></div>
+        <button id="closeLightboxBtn" type="button" class="border border-neutral-700 hover:border-white text-neutral-300 hover:text-white text-xs tracking-widest uppercase px-3.5 py-1.5 transition" data-i18n="lightbox_close">
+          ✕ 關閉預覽
+        </button>
+      </div>
+      <div class="p-4 flex items-center justify-center max-h-[80vh] overflow-auto bg-black">
+        <img id="lightboxImg" alt="Preview" class="max-w-full max-h-[74vh] object-contain" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastNotice" class="fixed bottom-6 right-6 z-50 hidden bg-neutral-900 border border-amber-400 text-white text-xs sm:text-sm tracking-wider px-6 py-4 shadow-2xl" data-i18n="toast_copied">
+    ✅ 已複製完整店面招租規格！可直接貼給客戶或群組。
+  </div>
+
+  <!-- Stealth Admin Mount Container (Empty by default; populated only when admin_portal.js is lazy-loaded) -->
+  <div id="stealthAdminMount"></div>
+
+  <!-- Scripts -->
+  <script src="./js/i18n_switcher.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
