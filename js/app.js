@@ -19,14 +19,12 @@
   let adminPortalLoaded = false;
   let adminPortalLoading = false;
 
-  // Load Firebase runtime config strictly from localStorage (Zero hardcoded API keys in source code)
+  // Non-sensitive public project identifier for read-only Firestore REST gallery fetching (Zero API keys in source code)
+  const DEFAULT_PUBLIC_PROJECT_ID = 'orderseefoo';
   if (!window.__FIREBASE_CONFIG__) {
-    try {
-      const savedCfg = localStorage.getItem('tcstorefront_firebase_runtime_config');
-      if (savedCfg) {
-        window.__FIREBASE_CONFIG__ = JSON.parse(savedCfg);
-      }
-    } catch (e) {}
+    window.__FIREBASE_CONFIG__ = {
+      projectId: DEFAULT_PUBLIC_PROJECT_ID
+    };
   }
 
   // Safe HTML Escaping to prevent Stored XSS in dynamic photo captions

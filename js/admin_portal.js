@@ -16,6 +16,20 @@
   const MAX_UPLOAD_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
   const CONFIG_STORAGE_KEY = 'tcstorefront_firebase_runtime_config';
 
+  // Purge any legacy API keys stored in persistent localStorage from earlier versions
+  try {
+    localStorage.removeItem(CONFIG_STORAGE_KEY);
+  } catch (e) {}
+
+  // In-memory / session-only runtime config (API Key is NEVER written to persistent localStorage or source code)
+  let sessionRuntimeConfig = {
+    apiKey: '',
+    authDomain: 'orderseefoo.firebaseapp.com',
+    projectId: 'orderseefoo',
+    storageBucket: 'orderseefoo.firebasestorage.app',
+    adminUidWhitelist: ['GxxxNnuuMTbRN16P5Qzvl8nlJzC3']
+  };
+
   let firebaseApp = null;
   let firebaseAuth = null;
   let firebaseDb = null;
@@ -56,30 +70,32 @@
 
   function getRuntimeConfig() {
     try {
-      const saved = localStorage.getItem(CONFIG_STORAGE_KEY);
+      const saved = sessionStorage.getItem(CONFIG_STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed && typeof parsed === 'object') {
-          return parsed;
+          sessionRuntimeConfig = {
+            ...sessionRuntimeConfig,
+            ...parsed
+          };
         }
       }
     } catch (e) {}
-    if (window.__FIREBASE_CONFIG__ && window.__FIREBASE_CONFIG__.apiKey) {
-      return window.__FIREBASE_CONFIG__;
-    }
-    return {
-      apiKey: '',
-      authDomain: '',
-      projectId: '',
-      storageBucket: '',
-      adminUidWhitelist: []
-    };
+    return sessionRuntimeConfig;
   }
 
   function saveRuntimeConfig(cfg) {
-    window.__FIREBASE_CONFIG__ = cfg;
+    sessionRuntimeConfig = {
+      ...sessionRuntimeConfig,
+      ...cfg
+    };
+    window.__FIREBASE_CONFIG__ = {
+      projectId: sessionRuntimeConfig.projectId
+    };
     try {
-      localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(cfg));
+      // Store only in ephemeral sessionStorage (automatically wiped when browser tab closes)
+      sessionStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(sessionRuntimeConfig));
+      localStorage.removeItem(CONFIG_STORAGE_KEY);
     } catch (e) {}
   }
 
@@ -278,35 +294,38 @@
             <div id="adminStatusAlert" class="hidden p-4 border text-xs leading-relaxed"></div>
 
             <!-- Section 1: Firebase Connection & Admin UID Whitelist Configuration -->
-            <details id="firebaseConfigDetails" class="border border-neutral-800 bg-neutral-900/50 p-4">
+            <details id="firebaseConfigDetails" open class="border border-neutral-800 bg-neutral-900/50 p-4">
               <summary class="cursor-pointer text-xs tracking-widest uppercase text-amber-400 font-medium flex items-center justify-between">
-                <span>⚙️ Firebase 雲端專案與管理員 UID 白名單設定 (Firebase & UID Whitelist Config)</span>
+                <span>⚙️ Firebase 雲端連線金鑰輸入（僅暫存於當次分頁記憶體，關閉分頁自動銷毀）</span>
                 <span class="text-neutral-400 text-[11px]">點擊展開 / 收合</span>
               </summary>
               <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                <div>
-                  <label class="block text-neutral-400 mb-1">Firebase API Key (僅儲存於本機瀏覽器 localStorage)</label>
-                  <input id="cfgApiKey" type="password" placeholder="請貼入 Firebase Web API Key" class="w-full bg-neutral-950 border border-neutral-800 px-3 py-2 text-white focus:border-amber-400 outline-none" />
-                </div>
-                <div>
-                  <label class="block text-neutral-400 mb-1">Firebase Project ID</label>
-                  <input id="cfgProjectId" type="text" placeholder="your-project-id" class="w-full bg-neutral-950 border border-neutral-800 px-3 py-2 text-white focus:border-amber-400 outline-none" />
-                </div>
-                <div>
-                  <label class="block text-neutral-400 mb-1">Auth Domain (選填，預設 projectId.firebaseapp.com)</label>
-                  <input id="cfgAuthDomain" type="text" placeholder="your-project-id.firebaseapp.com" class="w-full bg-neutral-950 border border-neutral-800 px-3 py-2 text-white focus:border-amber-400 outline-none" />
-                </div>
-                <div>
-                  <label class="block text-neutral-400 mb-1">Storage Bucket (選填，預設 projectId.appspot.com)</label>
-                  <input id="cfgStorageBucket" type="text" placeholder="your-project-id.appspot.com" class="w-full bg-neutral-950 border border-neutral-800 px-3 py-2 text-white focus:border-amber-400 outline-none" />
-                </div>
                 <div class="sm:col-span-2">
-                  <label class="block text-amber-300 mb-1">管理員專屬 UID 白名單 (Admin UID Whitelist，多個請用逗號分隔)</label>
-                  <input id="cfgAdminUids" type="text" placeholder="例如：xYz123AdminUid, aBc456OwnerUid" class="w-full bg-neutral-950 border border-neutral-800 px-3 py-2 text-white focus:border-amber-400 outline-none font-mono" />
+                  <label class="block text-amber-300 font-medium mb-1">🔑 Firebase Web API Key（必填：僅暫存於本次分頁 sessionStorage，關閉網頁自動清除，絕不落盤）</label>
+                  <input id="cfgApiKey" type="password" autocomplete="off" placeholder="請貼入您的 Firebase Web API Key 即可連線登入" class="w-full bg-neutral-950 border border-amber-500/60 px-3 py-2 text-white focus:border-amber-400 outline-none" />
                 </div>
-                <div class="sm:col-span-2 flex justify-end pt-2">
+                <div>
+                  <label class="block text-neutral-400 mb-1">Firebase Project ID（已預填）</label>
+                  <input id="cfgProjectId" type="text" placeholder="orderseefoo" class="w-full bg-neutral-950 border border-neutral-800 px-3 py-2 text-white focus:border-amber-400 outline-none" />
+                </div>
+                <div>
+                  <label class="block text-neutral-400 mb-1">Auth Domain（已預填）</label>
+                  <input id="cfgAuthDomain" type="text" placeholder="orderseefoo.firebaseapp.com" class="w-full bg-neutral-950 border border-neutral-800 px-3 py-2 text-white focus:border-amber-400 outline-none" />
+                </div>
+                <div>
+                  <label class="block text-neutral-400 mb-1">Storage Bucket（已預填）</label>
+                  <input id="cfgStorageBucket" type="text" placeholder="orderseefoo.firebasestorage.app" class="w-full bg-neutral-950 border border-neutral-800 px-3 py-2 text-white focus:border-amber-400 outline-none" />
+                </div>
+                <div>
+                  <label class="block text-neutral-400 mb-1">管理員專屬 UID 白名單（已預填）</label>
+                  <input id="cfgAdminUids" type="text" placeholder="GxxxNnuuMTbRN16P5Qzvl8nlJzC3" class="w-full bg-neutral-950 border border-neutral-800 px-3 py-2 text-white focus:border-amber-400 outline-none font-mono" />
+                </div>
+                <div class="sm:col-span-2 flex items-center justify-between pt-2 gap-2">
+                  <button id="wipeSessionKeyBtn" type="button" class="border border-neutral-700 hover:border-red-400 text-neutral-400 hover:text-red-300 px-3.5 py-2 text-xs tracking-wider uppercase transition">
+                    🧹 立即清除記憶體金鑰並登出
+                  </button>
                   <button id="saveFirebaseCfgBtn" type="button" class="bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold px-5 py-2 text-xs tracking-wider uppercase transition">
-                    儲存並連線 Firebase
+                    套用金鑰並連線 Firebase
                   </button>
                 </div>
               </div>
@@ -717,11 +736,32 @@
 
         const ok = await ensureFirebaseInitialized();
         if (ok) {
-          showAdminAlert('✓ Firebase 連線設定與管理員 UID 白名單已儲存並啟用！', false);
+          showAdminAlert('✓ Firebase 連線設定已載入當次記憶體（關閉分頁後自動銷毀）！現在可點擊下方按鈕登入。', false);
         } else {
-          showAdminAlert('已儲存設定（請確認 API Key 與 Project ID 完整以啟用雲端驗證）。', false);
+          showAdminAlert('請貼入有效的 Firebase Web API Key 以啟用雲端驗證。', true);
         }
         renderAdminState();
+      });
+    }
+
+    const wipeBtn = document.getElementById('wipeSessionKeyBtn');
+    if (wipeBtn) {
+      wipeBtn.addEventListener('click', async () => {
+        if (firebaseAuth) {
+          try {
+            await firebaseAuth.signOut();
+          } catch (e) {}
+        }
+        currentUser = null;
+        sessionRuntimeConfig.apiKey = '';
+        try {
+          sessionStorage.removeItem(CONFIG_STORAGE_KEY);
+          localStorage.removeItem(CONFIG_STORAGE_KEY);
+        } catch (e) {}
+        const apiKeyEl = document.getElementById('cfgApiKey');
+        if (apiKeyEl) apiKeyEl.value = '';
+        renderAdminState();
+        showAdminAlert('✓ 已徹底清除瀏覽器記憶體中的 API Key 並安全登出！', false);
       });
     }
 
