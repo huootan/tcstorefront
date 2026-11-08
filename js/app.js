@@ -63,11 +63,11 @@
       longterm: {
         badge: '主推方案 · 企業展店首選',
         title: 'Option 01｜長期旗艦進駐（連鎖品牌／診所／大型餐飲零售）',
-        price: 'NT$ 120,000 / 月（含稅＋含每月約 $8,000 管理費）',
+        price: 'NT$ 120,000 / 月（含稅＋含每月 $8,050 管理費）',
         summary:
-          '一般店面月租 12 萬若外加 10% 租賃稅（$12,000）與管理費（$8,000），企業每月實際支出高達 $140,000！本物件由屋主直接吸收稅金與管理費，簽約滿 5 年再享前 3 個月免租裝潢期。',
+          '一般店面月租 12 萬若外加 10% 租賃稅（$12,000）與管理費（$8,050），企業每月實際支出高達 $140,050！本物件由屋主直接吸收稅金與管理費，簽約滿 5 年再享前 3 個月免租裝潢期。',
         metrics: [
-          { label: '扣除管理費後實質月租', value: '約 NT$ 112,000 / 月', sub: '管理費每月約 $8,000 由屋主負擔' },
+          { label: '扣除管理費後實質月租', value: 'NT$ 111,950 / 月', sub: '管理費每月 $8,050 由屋主負擔' },
           { label: '發票與報稅條件', value: '含稅價（可正式營登）', sub: '幫企業省下 10% 租賃稅額外支出' },
           { label: '5 年長約免租期優惠', value: '前 3 個月免收租金', sub: '直接幫企業省下 NT$ 360,000 裝潢期房租' }
         ],
@@ -80,12 +80,12 @@
       shortterm: {
         badge: '1～3 個月彈性租期 · 免長約綁定',
         title: 'Option 02｜短期快閃店／換季特賣會（1–3 個月）',
-        price: 'NT$ 180,000 / 月',
+        price: '專案另洽（依檔期與活動性質洽談）',
         summary:
           '適合服飾鞋包換季特賣會、年貨大街、家電展售、建案臨時接待中心或新品牌市場水溫測試，享受 9 公尺超大面寬廣告效益與正對公園的週末人潮。',
         metrics: [
           { label: '適用租期長度', value: '1 至 3 個月', sub: '免受多年長約限制，檔期靈活' },
-          { label: '短期月租金', value: 'NT$ 180,000 / 月', sub: '室內 47.7 坪（157.7 m²）挑高方正空間全區使用' },
+          { label: '短期租金定價', value: '專案另洽', sub: '室內 47.7 坪（157.7 m²）挑高方正空間全區使用' },
           { label: '集客與物流優勢', value: '專屬卸貨區＋30m 停車場', sub: '進撤場貨車上下貨與顧客採買停車超便利' }
         ],
         bullets: [
@@ -97,18 +97,18 @@
       daily: {
         badge: '單日活動／快閃市集／品牌發表',
         title: 'Option 03｜單日快閃租借／活動展演空間',
-        price: 'NT$ 10,000 / 日',
+        price: '專案另洽（依活動天數與檔期洽談）',
         summary:
           '需要大坪數、挑高採光好且客人超好停車的一樓場地？提供單日快閃租借，適合一日限定特賣、團購取貨快閃、品牌體驗會、社區推廣活動或商業攝影。',
         metrics: [
-          { label: '單日租金定價', value: 'NT$ 10,000 / 日', sub: '可使用室內 47.7 坪（157.7 m²）挑高大空間' },
+          { label: '單日租金定價', value: '專案另洽', sub: '可使用室內 47.7 坪（157.7 m²）挑高大空間' },
           { label: '空間尺度', value: '面寬 9m × 深度 15m', sub: '挑高 4.6 公尺開闊無壓迫感，採光極佳' },
           { label: '顧客停車距離', value: '汽機車停車場 20–30m', sub: '參加活動免繞圈找車位' }
         ],
         bullets: [
           '一樓臨路免爬樓梯、附設專屬卸貨區，活動道具與展品搬運最省力。',
           '正對青山廣場綠意，落地窗自然採光充足，拍照打卡視覺效果極佳。',
-          '如需連續多日租借或週末檔期預約，歡迎直接加 LINE 洽詢屋主鄭先生 / 鄭太太。'
+          '如需單日、連續多日租借或週末檔期預約，歡迎直接加 LINE 洽詢屋主鄭先生 / 鄭太太。'
         ]
       },
       split: {
@@ -132,11 +132,11 @@
       longterm: {
         badge: 'FLAGSHIP CHOICE · BEST VALUE FOR CHAINS',
         title: 'Option 01｜Long-Term Flagship Lease (Chain Retail / Clinic / F&B)',
-        price: 'NT$ 120,000 / mo (Tax & ~NT$8,000 Mgmt Fee Included)',
+        price: 'NT$ 120,000 / mo (Tax & NT$8,050 Mgmt Fee Included)',
         summary:
-          'In standard commercial leases, a NT$120K base rent plus 10% rental tax (NT$12K) and management fee (NT$8K) actually costs the tenant NT$140,000/month! Here, the owner covers both tax and management fees—plus a 5-year lease includes a 3-month rent-free fit-out period.',
+          'In standard commercial leases, a NT$120K base rent plus 10% rental tax (NT$12K) and management fee (NT$8,050) actually costs the tenant NT$140,050/month! Here, the owner covers both tax and management fees—plus a 5-year lease includes a 3-month rent-free fit-out period.',
         metrics: [
-          { label: 'Effective Net Rent (Ex-Mgmt)', value: '~NT$ 112,000 / mo', sub: 'Owner covers the ~NT$8,000/mo management fee' },
+          { label: 'Effective Net Rent (Ex-Mgmt)', value: 'NT$ 111,950 / mo', sub: 'Owner covers the NT$8,050/mo management fee' },
           { label: 'Tax & Business Registration', value: 'Tax-Inclusive', sub: 'Saves corporate tenants 10% rental tax' },
           { label: '5-Year Lease Incentive', value: '3 Months Rent-Free Fit-Out', sub: 'Saves NT$ 360,000 during your renovation period' }
         ],
@@ -149,12 +149,12 @@
       shortterm: {
         badge: '1–3 MONTHS FLEXIBLE TERM · NO LONG LOCK-IN',
         title: 'Option 02｜Short-Term Pop-Up Lease Options (1–3 Months)',
-        price: 'NT$ 180,000 / month',
+        price: 'Contact for Quote (Custom Quoted by Schedule)',
         summary:
           'Ideal for seasonal apparel/footwear clearance sales, holiday markets, appliance expos, real estate reception centers, or brand market testing with 9m frontage visibility.',
         metrics: [
           { label: 'Lease Duration', value: '1 to 3 Months', sub: 'Flexible scheduling without multi-year commitment' },
-          { label: 'Short-Term Monthly Rate', value: 'NT$ 180,000 / mo', sub: 'Full access to 47.7 Ping (157.7 sq.m.) interior' },
+          { label: 'Short-Term Rate', value: 'Contact for Quote', sub: 'Full access to 47.7 Ping (157.7 sq.m.) interior' },
           { label: 'Logistics & Parking', value: 'Loading Zone + 30m Parking', sub: 'Effortless truck unloading & customer parking' }
         ],
         bullets: [
@@ -166,18 +166,18 @@
       daily: {
         badge: 'SINGLE-DAY EVENTS / FLASH SALES / PRODUCTIONS',
         title: 'Option 03｜Single-Day Pop-Up & Event Space Rental',
-        price: 'NT$ 10,000 / day',
+        price: 'Contact for Quote (Custom Quoted by Event)',
         summary:
           'Need a bright, high-ceiling ground-floor venue with effortless parking? Available for single-day flash sales, group-buying pickup events, product launches, community workshops, or commercial shoots.',
         metrics: [
-          { label: 'Daily Rental Rate', value: 'NT$ 10,000 / day', sub: 'Full 47.7 Ping (157.7 sq.m.) ground-floor space' },
+          { label: 'Daily Rental Rate', value: 'Contact for Quote', sub: 'Full 47.7 Ping (157.7 sq.m.) ground-floor space' },
           { label: 'Spatial Dimensions', value: '9m W × 15m D × 4.6m H', sub: 'Spacious, airy, and filled with natural light' },
           { label: 'Visitor Parking', value: '20–30m to Parking Lots', sub: 'Hassle-free arrival for guests and VIPs' }
         ],
         bullets: [
           'Ground-floor street access with dedicated loading zone makes moving equipment and props effortless.',
           'Lush green views of Qingshan Park through expansive windows create a stunning backdrop.',
-          'Contact Owner Mr. / Mrs. Cheng on LINE to check weekend or multi-day availability.'
+          'Contact Owner Mr. / Mrs. Cheng on LINE to inquire about rates and availability.'
         ]
       },
       split: {
@@ -632,8 +632,8 @@
       '📍 地址：新北市土城區青雲路 341 號 1F（正對青山廣場公園）',
       '📐 坪數尺度：總坪數 80 坪（264.5 m²）／ 室內實坪 47.7 坪（157.7 m²），面寬 9 公尺 × 深度約 15 公尺 × 挑高 4.6 公尺',
       '🏛️ 使用執照：B-3 一般零售業使用執照（可正式辦理營業登記）',
-      '💰 長租條件：月租 NT$ 120,000 元（含稅及每月約 8,000 元管理費）、押金 2 個月、5 年長約享前 3 個月免租裝潢期',
-      '⚡ 短租快閃方案：1~3 個月期月租 NT$ 180,000 元、單日租 NT$ 10,000 元/日',
+      '💰 長租條件：月租 NT$ 120,000 元（含稅及每月 8,050 元管理費）、押金 2 個月、5 年長約享前 3 個月免租裝潢期',
+      '⚡ 短租快閃方案：1~3 個月短期快閃／特賣會、單日活動展演皆可（租金專案另洽）',
       '🔧 硬體設備：三相電、天然氣、排煙排水系統、專屬卸貨區',
       '🚗 停車與交通：機車停車場 20m、青山汽車停車場 30m；門口公車直達捷運海山站，步行可達未來萬大線 LG10 站',
       '📞 聯絡人：鄭先生 / 鄭太太 0955-599-119（屋主自租免仲介費，歡迎房仲合作配案）',
@@ -645,8 +645,8 @@
       '📍 Address: 1F, No. 341, Qingyun Rd., Tucheng Dist., New Taipei City (Directly facing Qingshan Park)',
       '📐 Dimensions: Gross 80 Ping (264.5 sq.m.) / Net Interior 47.7 Ping (157.7 sq.m.) | 9m Width × 15m Depth × 4.6m Ceiling',
       '🏛️ Permit: B-3 General Retail Occupancy Permit (Official business registration ready)',
-      '💰 Long-Term Lease: NT$ 120,000/mo (Tax & ~NT$8,000/mo management fee included), 2-month deposit; 5-year lease includes a 3-month rent-free fit-out period',
-      '⚡ Short-Term Pop-Up Lease Options: NT$180,000/mo for 1–3 months, or NT$10,000/day',
+      '💰 Long-Term Lease: NT$ 120,000/mo (Tax & NT$8,050/mo management fee included), 2-month deposit; 5-year lease includes a 3-month rent-free fit-out period',
+      '⚡ Short-Term & Pop-Up Options: 1–3 months pop-up or single-day events available (Contact for Quote)',
       '🔧 Infrastructure: 3-phase power, natural gas, exhaust & drainage systems, dedicated loading zone',
       '🚗 Parking & Transit: 20m to scooter parking, 30m to Qingshan Car Park; bus at doorstep to Haishan MRT Station',
       '📞 Contact: Owner Mr. / Mrs. Cheng 0955-599-119 (Direct tenants & commercial brokers welcome)',
