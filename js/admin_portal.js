@@ -9,7 +9,9 @@
  * 3. Pre-upload validation: strictly `image/jpeg`, `image/png`, `image/webp` only, max file size 5MB,
  *    strict filename sanitization against Path Traversal & XSS, plus client-side Canvas image compression.
  * 4. Secondary Confirmation Modal before deleting any photo, syncing Cloud Storage + Firestore `gallery_photos`.
- * 5. Strict HTML Escaping / DOM API creation to prevent Stored XSS.
+ * 5. Full Gallery List Editing & Batch Cloud Sync (`syncEntireGalleryListToFirestore`) so edits, reorders,
+ *    and deletions of both default and uploaded photos propagate immediately to all public visitors.
+ * 6. Strict HTML Escaping / DOM API creation to prevent Stored XSS.
  */
 (function () {
   const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
@@ -39,6 +41,12 @@
   let compressedUploadBlob = null;
   let compressedPreviewDataUrl = null;
   let sanitizedUploadFileName = '';
+
+  // Edit Photo Modal State
+  let editingPhotoTarget = null;
+  let editReplacementBlob = null;
+  let editReplacementDataUrl = null;
+  let editReplacementFileName = '';
 
   // Strict HTML Escape utility
   function escapeHtml(str) {
@@ -123,6 +131,77 @@
       }
     }
     return '';
+  }
+
+  // Normalize a photo object to strictly comply with `isValidPhotoDocument()` in `firestore.rules`
+  function normalizePhotoForFirestore(rawPhoto, fallbackIndex, uid) {
+    const rawId = typeof rawPhoto.id === 'string' && rawPhoto.id.trim() ? rawPhoto.id.trim() : `photo_${Date.now()}_${fallbackIndex}`;
+    const safeId = rawId.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 64);
+    const parsedOrder = parseInt(rawPhoto.order, 10);
+    const safeOrder = !isNaN(parsedOrder) && parsedOrder >= 0 && parsedOrder <= 9999 ? parsedOrder : fallbackIndex + 1;
+    let safeSrc = sanitizeImageUrl(rawPhoto.src || '');
+    if (safeSrc.startsWith('assets/')) {
+      safeSrc = './' + safeSrc;
+    }
+    const safeCategory = rawPhoto.category === 'exterior' ? 'exterior' : 'interior';
+    const doc = {
+      id: safeId,
+      order: safeOrder,
+      src: safeSrc.slice(0, 1024),
+      storagePath: typeof rawPhoto.storagePath === 'string' ? rawPhoto.storagePath.slice(0, 256) : '',
+      category: safeCategory,
+      tag_zh: typeof rawPhoto.tag_zh === 'string' ? rawPhoto.tag_zh.trim().slice(0, 40) : '',
+      tag_en: typeof rawPhoto.tag_en === 'string' ? rawPhoto.tag_en.trim().slice(0, 40) : '',
+      title_zh: typeof rawPhoto.title_zh === 'string' && rawPhoto.title_zh.trim()
+        ? rawPhoto.title_zh.trim().slice(0, 120)
+        : '土城青雲路341號店面實景',
+      title_en: typeof rawPhoto.title_en === 'string' && rawPhoto.title_en.trim()
+        ? rawPhoto.title_en.trim().slice(0, 120)
+        : 'Tucheng No. 341 Qingyun Rd. Storefront',
+      desc_zh: typeof rawPhoto.desc_zh === 'string' ? rawPhoto.desc_zh.trim().slice(0, 200) : '',
+      desc_en: typeof rawPhoto.desc_en === 'string' ? rawPhoto.desc_en.trim().slice(0, 200) : '',
+      updatedAt: new Date().toISOString()
+    };
+    if (uid) {
+      doc.uploadedByUid = uid;
+    }
+    return doc;
+  }
+
+  /**
+   * Synchronizes the entire current gallery photo list to Firestore `gallery_photos` collection
+   * and deletes any cloud documents that were removed from `photoList`.
+   */
+  async function syncEntireGalleryListToFirestore(photoList) {
+    const cfg = getRuntimeConfig();
+    if (!cfg.apiKey || !cfg.projectId || !firebaseDb || !isUserAuthorizedAdmin(currentUser, cfg)) {
+      return { synced: false, reason: 'not_connected' };
+    }
+
+    const normalizedList = photoList
+      .map((item, idx) => normalizePhotoForFirestore(item, idx, currentUser.uid))
+      .filter((item) => item.src.length > 0);
+
+    const activeIds = new Set(normalizedList.map((item) => item.id));
+    const colRef = firebaseDb.collection('gallery_photos');
+    const existingSnap = await colRef.get();
+    const batch = firebaseDb.batch();
+
+    // Remove any Firestore docs no longer present in the active list
+    existingSnap.forEach((docSnap) => {
+      if (!activeIds.has(docSnap.id)) {
+        batch.delete(docSnap.ref);
+      }
+    });
+
+    // Upsert all current photos in the active list
+    normalizedList.forEach((docData) => {
+      const docRef = colRef.doc(docData.id);
+      batch.set(docRef, docData);
+    });
+
+    await batch.commit();
+    return { synced: true, count: normalizedList.length, normalizedList };
   }
 
   // Verify binary file header (Magic Bytes) for JPEG, PNG, and WebP
@@ -265,6 +344,53 @@
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
+  }
+
+  // Shared helper to validate an image file before compression
+  async function validateAndCompressFile(file, inputEl) {
+    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+      if (inputEl) inputEl.value = '';
+      showAdminAlert(
+        `資安攔截：禁止上傳 "${escapeHtml(file.type || '未知格式')}"！僅允許 image/jpeg, image/png, image/webp。`,
+        true
+      );
+      return null;
+    }
+
+    if (file.size >= MAX_UPLOAD_SIZE_BYTES) {
+      if (inputEl) inputEl.value = '';
+      showAdminAlert(
+        `資安攔截：檔案大小 (${(file.size / 1024 / 1024).toFixed(2)} MB) 超過 5MB 上限！`,
+        true
+      );
+      return null;
+    }
+
+    const validSignature = await verifyImageMagicBytes(file);
+    if (!validSignature) {
+      if (inputEl) inputEl.value = '';
+      showAdminAlert(
+        '資安攔截：檔案二進位標頭 (Magic Bytes) 驗證失敗！禁止偽造副檔名之非圖檔上傳。',
+        true
+      );
+      return null;
+    }
+
+    const cleanName = sanitizeFileName(file.name);
+    try {
+      const result = await compressAndPreviewImage(file);
+      return {
+        cleanName,
+        blob: result.blob,
+        dataUrl: result.dataUrl,
+        width: result.width,
+        height: result.height
+      };
+    } catch (err) {
+      if (inputEl) inputEl.value = '';
+      showAdminAlert('圖片解析失敗，請確認檔案為有效圖檔。', true);
+      return null;
+    }
   }
 
   function buildAdminModalDom() {
@@ -439,17 +565,102 @@
 
               <!-- Current Gallery List -->
               <div class="border border-neutral-800 bg-neutral-900/40 p-5 space-y-4">
-                <div class="flex items-center justify-between">
-                  <h3 class="text-xs tracking-[0.2em] uppercase text-neutral-300 font-medium">
-                    🖼️ 目前前台展示照片清單（支援排序與同步移除）
-                  </h3>
-                  <button id="resetDefaultPhotosBtn" type="button" class="text-[11px] text-neutral-400 hover:text-white underline">
-                    還原預設 7 張實景圖庫
-                  </button>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h3 class="text-xs tracking-[0.2em] uppercase text-neutral-200 font-medium">
+                      🖼️ 目前前台展示照片清單（支援單張編輯、排序、刪除與雲端同步）
+                    </h3>
+                    <p class="text-[11px] text-neutral-400 mt-1">
+                      點擊「✏️ 編輯」可修改任一照片的中英文標題、圖說、標籤、分類、排序或更換圖檔；所有變更將自動同步至雲端讓所有訪客立即看到。
+                    </p>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-2 shrink-0">
+                    <button id="syncCurrentListCloudBtn" type="button" class="bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold px-3.5 py-1.5 text-[11px] tracking-wider uppercase transition">
+                      ☁️ 同步發布目前清單至雲端
+                    </button>
+                    <button id="resetDefaultPhotosBtn" type="button" class="border border-neutral-700 hover:border-white text-neutral-300 hover:text-white px-3 py-1.5 text-[11px] tracking-wider transition">
+                      還原預設 7 張圖庫
+                    </button>
+                  </div>
                 </div>
                 <div id="adminPhotoListContainer" class="space-y-2.5"></div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Photo Modal -->
+      <div id="editPhotoModal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="max-w-2xl w-full bg-neutral-950 border border-amber-500/60 p-6 text-white shadow-2xl space-y-4 my-8">
+          <div class="flex items-center justify-between border-b border-neutral-800 pb-3">
+            <div class="text-xs tracking-widest uppercase text-amber-400 font-bold">
+              ✏️ 編輯前台展示照片資訊 (Edit Gallery Photo)
+            </div>
+            <span id="editPhotoIdBadge" class="text-[11px] font-mono text-neutral-400 bg-neutral-900 px-2 py-0.5 border border-neutral-800"></span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div class="sm:col-span-2 flex items-center gap-4 bg-neutral-900/60 p-3 border border-neutral-800">
+              <img id="editPhotoCurrentThumb" alt="Current Photo" class="w-28 h-20 object-cover border border-neutral-700 shrink-0" />
+              <div class="space-y-1.5 flex-1">
+                <label class="block text-neutral-300 font-medium">更換照片圖檔（選填：不選則保留原圖，支援 JPEG/PNG/WebP &lt; 5MB）</label>
+                <input id="editPhotoFileInput" type="file" accept="image/jpeg,image/png,image/webp" class="w-full bg-neutral-950 border border-neutral-800 p-1.5 text-neutral-300 text-[11px]" />
+                <div id="editPhotoReplaceStatus" class="text-[11px] text-emerald-400 hidden"></div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-neutral-400 mb-1">分類 (Category)</label>
+              <select id="editPhotoCategorySelect" class="w-full bg-neutral-950 border border-neutral-800 px-3 py-2 text-white outline-none">
+                <option value="interior">室內與平面圖 (interior)</option>
+                <option value="exterior">外觀、公園與停車場 (exterior)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-neutral-400 mb-1">排序權重 (Order，數字越小越前面)</label>
+              <input id="editPhotoOrderInput" type="number" min="1" max="999" class="w-full bg-neutral-950 border border-neutral-800 px-3 py-2 text-white outline-none" />
+            </div>
+
+            <div>
+              <label class="block text-neutral-400 mb-1">繁中標籤 (Tag zh-TW，上限 40 字)</label>
+              <input id="editPhotoTagZhInput" type="text" maxlength="40" class="w-full bg-neutral-950 border border-neutral-800 px-3 py-2 text-white outline-none" />
+            </div>
+
+            <div>
+              <label class="block text-neutral-400 mb-1">英文標籤 (Tag en-US，上限 40 字)</label>
+              <input id="editPhotoTagEnInput" type="text" maxlength="40" class="w-full bg-neutral-950 border border-neutral-800 px-3 py-2 text-white outline-none" />
+            </div>
+
+            <div>
+              <label class="block text-neutral-400 mb-1">繁中標題 (Title zh-TW，上限 120 字)</label>
+              <input id="editPhotoTitleZhInput" type="text" maxlength="120" class="w-full bg-neutral-950 border border-neutral-800 px-3 py-2 text-white outline-none" />
+            </div>
+
+            <div>
+              <label class="block text-neutral-400 mb-1">英文標題 (Title en-US，上限 120 字)</label>
+              <input id="editPhotoTitleEnInput" type="text" maxlength="120" class="w-full bg-neutral-950 border border-neutral-800 px-3 py-2 text-white outline-none" />
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="block text-neutral-400 mb-1">繁中圖說 (Caption zh-TW，上限 200 字)</label>
+              <input id="editPhotoDescZhInput" type="text" maxlength="200" class="w-full bg-neutral-950 border border-neutral-800 px-3 py-2 text-white outline-none" />
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="block text-neutral-400 mb-1">英文圖說 (Caption en-US，上限 200 字)</label>
+              <input id="editPhotoDescEnInput" type="text" maxlength="200" class="w-full bg-neutral-950 border border-neutral-800 px-3 py-2 text-white outline-none" />
+            </div>
+          </div>
+
+          <div class="flex items-center justify-end gap-3 pt-3 border-t border-neutral-800">
+            <button id="cancelEditPhotoBtn" type="button" class="border border-neutral-700 hover:border-white text-neutral-300 text-xs px-4 py-2 tracking-wider uppercase">
+              取消
+            </button>
+            <button id="saveEditPhotoBtn" type="button" class="bg-amber-500 hover:bg-amber-400 text-neutral-950 text-xs font-bold px-5 py-2 tracking-wider uppercase">
+              💾 儲存修改並同步至雲端
+            </button>
           </div>
         </div>
       </div>
@@ -459,7 +670,7 @@
         <div class="max-w-md w-full bg-neutral-950 border border-red-500/60 p-6 text-white shadow-2xl space-y-4">
           <div class="text-xs tracking-widest uppercase text-red-400 font-bold">⚠️ 二次安全確認 (Secondary Deletion Confirmation)</div>
           <p class="text-sm text-neutral-200 font-light leading-relaxed">
-            您確定要永久移除此張展示照片嗎？此操作將同步刪除 Cloud Storage 實體圖檔與 Firestore <code>gallery_photos</code> 紀錄，並立即更新前台畫廊。
+            您確定要永久移除此張展示照片嗎？此操作將同步刪除 Cloud Storage 實體圖檔與更新 Firestore <code>gallery_photos</code> 雲端清單，並立即更新前台畫廊。
           </p>
           <div id="deleteConfirmPhotoTitle" class="text-xs font-mono bg-neutral-900 p-3 border border-neutral-800 text-amber-300"></div>
           <div class="flex items-center justify-end gap-3 pt-2">
@@ -533,7 +744,7 @@
       if (badge) {
         if (authorized) {
           badge.className = 'text-[11px] text-emerald-400 font-bold';
-          badge.textContent = '✓ UID 白名單雙重查驗通過（具備雲端寫入與刪除權限）';
+          badge.textContent = '✓ UID 白名單雙重查驗通過（具備雲端寫入、編輯與刪除權限）';
         } else {
           badge.className = 'text-[11px] text-amber-300';
           badge.textContent =
@@ -577,15 +788,29 @@
 
       const subLine = document.createElement('div');
       subLine.className = 'text-[11px] text-neutral-400';
-      subLine.textContent = `分類: ${photo.category} ｜ 標籤: ${photo.tag_zh || ''}`;
+      subLine.textContent = `分類: ${photo.category === 'exterior' ? '外觀 (exterior)' : '室內 (interior)'} ｜ 標籤: ${photo.tag_zh || ''} / ${photo.tag_en || ''}`;
+
+      const descLine = document.createElement('div');
+      descLine.className = 'text-[11px] text-neutral-500 line-clamp-1';
+      descLine.textContent = photo.desc_zh || photo.desc_en || '';
 
       info.appendChild(titleLine);
       info.appendChild(subLine);
+      if (photo.desc_zh || photo.desc_en) {
+        info.appendChild(descLine);
+      }
       left.appendChild(thumb);
       left.appendChild(info);
 
       const actions = document.createElement('div');
-      actions.className = 'flex items-center gap-2 shrink-0';
+      actions.className = 'flex flex-wrap items-center gap-1.5 shrink-0';
+
+      const editBtn = document.createElement('button');
+      editBtn.type = 'button';
+      editBtn.className =
+        'border border-amber-500/60 hover:bg-amber-500 hover:text-neutral-950 text-amber-300 px-2.5 py-1 text-[11px] font-medium transition';
+      editBtn.textContent = '✏️ 編輯';
+      editBtn.addEventListener('click', () => openEditPhotoModal(photo, idx));
 
       const upBtn = document.createElement('button');
       upBtn.type = 'button';
@@ -602,10 +827,11 @@
       const delBtn = document.createElement('button');
       delBtn.type = 'button';
       delBtn.className =
-        'border border-red-500/50 hover:bg-red-600 hover:text-white text-red-300 px-3 py-1 text-[11px] transition';
-      delBtn.textContent = '刪除照片';
+        'border border-red-500/50 hover:bg-red-600 hover:text-white text-red-300 px-2.5 py-1 text-[11px] transition';
+      delBtn.textContent = '刪除';
       delBtn.addEventListener('click', () => openDeleteConfirmModal(photo));
 
+      actions.appendChild(editBtn);
       actions.appendChild(upBtn);
       actions.appendChild(downBtn);
       actions.appendChild(delBtn);
@@ -616,7 +842,169 @@
     });
   }
 
-  function movePhotoOrder(index, direction) {
+  function openEditPhotoModal(photo, idx) {
+    const cfg = getRuntimeConfig();
+    if (!isUserAuthorizedAdmin(currentUser, cfg)) {
+      showAdminAlert('拒絕存取：請先通過 Firebase Auth 驗證且確認 UID 已列入白名單！', true);
+      return;
+    }
+
+    editingPhotoTarget = { ...photo, _idx: idx };
+    editReplacementBlob = null;
+    editReplacementDataUrl = null;
+    editReplacementFileName = '';
+
+    const modal = document.getElementById('editPhotoModal');
+    const idBadge = document.getElementById('editPhotoIdBadge');
+    const thumb = document.getElementById('editPhotoCurrentThumb');
+    const fileInput = document.getElementById('editPhotoFileInput');
+    const replaceStatus = document.getElementById('editPhotoReplaceStatus');
+    const catSelect = document.getElementById('editPhotoCategorySelect');
+    const orderInput = document.getElementById('editPhotoOrderInput');
+    const tagZhInput = document.getElementById('editPhotoTagZhInput');
+    const tagEnInput = document.getElementById('editPhotoTagEnInput');
+    const titleZhInput = document.getElementById('editPhotoTitleZhInput');
+    const titleEnInput = document.getElementById('editPhotoTitleEnInput');
+    const descZhInput = document.getElementById('editPhotoDescZhInput');
+    const descEnInput = document.getElementById('editPhotoDescEnInput');
+
+    if (idBadge) idBadge.textContent = `ID: ${photo.id || 'item_' + (idx + 1)}`;
+    if (thumb) thumb.src = sanitizeImageUrl(photo.src);
+    if (fileInput) fileInput.value = '';
+    if (replaceStatus) {
+      replaceStatus.textContent = '';
+      replaceStatus.classList.add('hidden');
+    }
+    if (catSelect) catSelect.value = photo.category === 'exterior' ? 'exterior' : 'interior';
+    if (orderInput) orderInput.value = photo.order || idx + 1;
+    if (tagZhInput) tagZhInput.value = photo.tag_zh || '';
+    if (tagEnInput) tagEnInput.value = photo.tag_en || '';
+    if (titleZhInput) titleZhInput.value = photo.title_zh || '';
+    if (titleEnInput) titleEnInput.value = photo.title_en || '';
+    if (descZhInput) descZhInput.value = photo.desc_zh || '';
+    if (descEnInput) descEnInput.value = photo.desc_en || '';
+
+    if (modal) modal.classList.remove('hidden');
+  }
+
+  function closeEditPhotoModal() {
+    editingPhotoTarget = null;
+    editReplacementBlob = null;
+    editReplacementDataUrl = null;
+    editReplacementFileName = '';
+    const modal = document.getElementById('editPhotoModal');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  async function saveEditedPhoto() {
+    if (!editingPhotoTarget || !window.TCStorefrontGallery) return;
+    const cfg = getRuntimeConfig();
+    if (!isUserAuthorizedAdmin(currentUser, cfg)) {
+      closeEditPhotoModal();
+      showAdminAlert('拒絕存取：請先通過 Firebase Auth 驗證且確認 UID 已列入白名單！', true);
+      return;
+    }
+
+    const category = document.getElementById('editPhotoCategorySelect').value === 'exterior' ? 'exterior' : 'interior';
+    const order = parseInt(document.getElementById('editPhotoOrderInput').value || '1', 10) || 1;
+    const tag_zh = (document.getElementById('editPhotoTagZhInput').value || '').trim().slice(0, 40);
+    const tag_en = (document.getElementById('editPhotoTagEnInput').value || '').trim().slice(0, 40);
+    const title_zh = (document.getElementById('editPhotoTitleZhInput').value || '').trim().slice(0, 120);
+    const title_en = (document.getElementById('editPhotoTitleEnInput').value || '').trim().slice(0, 120);
+    const desc_zh = (document.getElementById('editPhotoDescZhInput').value || '').trim().slice(0, 200);
+    const desc_en = (document.getElementById('editPhotoDescEnInput').value || '').trim().slice(0, 200);
+
+    if (!title_zh || !title_en) {
+      showAdminAlert('請填寫照片的「繁中標題」與「英文標題」。', true);
+      return;
+    }
+
+    const saveBtn = document.getElementById('saveEditPhotoBtn');
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.textContent = '雲端同步中...';
+    }
+
+    try {
+      let updatedSrc = editingPhotoTarget.src;
+      let updatedStoragePath = editingPhotoTarget.storagePath || '';
+
+      // If admin selected a replacement image file, upload to Cloud Storage first
+      if (editReplacementBlob && firebaseStorage) {
+        const newStoragePath = `gallery_photos/${editReplacementFileName}`;
+        const storageRef = firebaseStorage.ref(newStoragePath);
+        await storageRef.put(editReplacementBlob, {
+          contentType: editReplacementBlob.type || 'image/jpeg'
+        });
+        updatedSrc = await storageRef.getDownloadURL();
+
+        // Optionally clean up old Cloud Storage object if it was a custom uploaded file
+        if (updatedStoragePath && updatedStoragePath !== newStoragePath) {
+          try {
+            await firebaseStorage.ref(updatedStoragePath).delete();
+          } catch (e) {}
+        }
+        updatedStoragePath = newStoragePath;
+      }
+
+      const list = window.TCStorefrontGallery.getPhotos();
+      const targetIndex = list.findIndex(
+        (p, i) => (p.id && p.id === editingPhotoTarget.id) || i === editingPhotoTarget._idx
+      );
+      if (targetIndex === -1) {
+        closeEditPhotoModal();
+        return;
+      }
+
+      const updatedItem = normalizePhotoForFirestore(
+        {
+          ...list[targetIndex],
+          src: updatedSrc,
+          storagePath: updatedStoragePath,
+          category,
+          order,
+          tag_zh,
+          tag_en,
+          title_zh,
+          title_en,
+          desc_zh,
+          desc_en
+        },
+        targetIndex,
+        currentUser ? currentUser.uid : ''
+      );
+
+      list[targetIndex] = updatedItem;
+      list.sort((a, b) => (a.order || 99) - (b.order || 99));
+      list.forEach((item, i) => {
+        item.order = i + 1;
+      });
+
+      const syncRes = await syncEntireGalleryListToFirestore(list);
+      const finalPhotos = syncRes.synced ? syncRes.normalizedList : list;
+
+      try {
+        localStorage.setItem('tcstorefront_gallery_cache', JSON.stringify(finalPhotos));
+      } catch (e) {}
+
+      window.TCStorefrontGallery.updatePhotos(finalPhotos);
+      closeEditPhotoModal();
+      renderAdminPhotoList();
+      showAdminAlert(
+        `✓ 已成功儲存「${updatedItem.title_zh}」的修改，並將全清單（共 ${finalPhotos.length} 張）同步發布至 Firebase 雲端！`,
+        false
+      );
+    } catch (err) {
+      showAdminAlert(`儲存或雲端同步失敗：${err.message}`, true);
+    } finally {
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = '💾 儲存修改並同步至雲端';
+      }
+    }
+  }
+
+  async function movePhotoOrder(index, direction) {
     const cfg = getRuntimeConfig();
     if (!isUserAuthorizedAdmin(currentUser, cfg)) {
       showAdminAlert('拒絕存取：請先通過 Firebase Auth 驗證且確認 UID 已列入白名單！', true);
@@ -641,6 +1029,15 @@
 
     window.TCStorefrontGallery.updatePhotos(list);
     renderAdminPhotoList();
+
+    try {
+      const syncRes = await syncEntireGalleryListToFirestore(list);
+      if (syncRes.synced) {
+        showAdminAlert('✓ 照片排序已更新並自動同步至 Firebase 雲端！', false);
+      }
+    } catch (err) {
+      showAdminAlert(`本機排序已更新，但雲端同步失敗：${err.message}`, true);
+    }
   }
 
   function openDeleteConfirmModal(photo) {
@@ -677,24 +1074,32 @@
       return;
     }
 
+    const updated = window.TCStorefrontGallery
+      .getPhotos()
+      .filter((p) => p.id !== pendingDeletePhoto.id && p.src !== pendingDeletePhoto.src);
+
+    updated.forEach((item, i) => {
+      item.order = i + 1;
+    });
+
     if (cfg.apiKey && cfg.projectId) {
       try {
         if (firebaseStorage && pendingDeletePhoto.storagePath) {
-          await firebaseStorage.ref(pendingDeletePhoto.storagePath).delete();
+          try {
+            await firebaseStorage.ref(pendingDeletePhoto.storagePath).delete();
+          } catch (storageErr) {}
         }
         if (firebaseDb && pendingDeletePhoto.id) {
           await firebaseDb.collection('gallery_photos').doc(pendingDeletePhoto.id).delete();
         }
+        // Sync the remaining list to Firestore so default photo deletions also persist in the cloud
+        await syncEntireGalleryListToFirestore(updated);
       } catch (err) {
         closeDeleteConfirmModal();
-        showAdminAlert(`雲端刪除失敗（請檢查 Firebase Security Rules 權限）：${err.message}`, true);
+        showAdminAlert(`雲端刪除或同步失敗（請檢查 Firebase Security Rules 權限）：${err.message}`, true);
         return;
       }
     }
-
-    const updated = window.TCStorefrontGallery
-      .getPhotos()
-      .filter((p) => p.id !== pendingDeletePhoto.id && p.src !== pendingDeletePhoto.src);
 
     try {
       localStorage.setItem('tcstorefront_gallery_cache', JSON.stringify(updated));
@@ -703,7 +1108,7 @@
     window.TCStorefrontGallery.updatePhotos(updated);
     closeDeleteConfirmModal();
     renderAdminPhotoList();
-    showAdminAlert('✓ 照片已通過二次確認並完成同步移除，前台畫廊已即時更新。', false);
+    showAdminAlert('✓ 照片已通過二次確認並完成雲端同步移除，前台畫廊已即時更新。', false);
   }
 
   function bindAdminEvents() {
@@ -819,7 +1224,7 @@
       });
     }
 
-    // Pre-upload File Validation (MIME + <5MB + Filename Sanitization + Canvas Compression)
+    // Pre-upload File Validation for New Photo (MIME + <5MB + Magic Bytes + Filename Sanitization + Canvas Compression)
     const fileInput = document.getElementById('photoFileInput');
     if (fileInput) {
       fileInput.addEventListener('change', async (e) => {
@@ -830,59 +1235,53 @@
           return;
         }
 
-        // 1. Strict MIME check
-        if (!ALLOWED_MIME_TYPES.includes(file.type)) {
-          fileInput.value = '';
-          showAdminAlert(
-            `資安攔截：禁止上傳 "${escapeHtml(file.type || '未知格式')}"！僅允許 image/jpeg, image/png, image/webp。`,
-            true
-          );
+        const validated = await validateAndCompressFile(file, fileInput);
+        if (!validated) return;
+
+        sanitizedUploadFileName = validated.cleanName;
+        compressedUploadBlob = validated.blob;
+        compressedPreviewDataUrl = validated.dataUrl;
+
+        const previewImg = document.getElementById('uploadPreviewImg');
+        const cleanNameEl = document.getElementById('uploadCleanName');
+        const infoEl = document.getElementById('uploadCompressedInfo');
+
+        if (previewImg) previewImg.src = validated.dataUrl;
+        if (cleanNameEl) cleanNameEl.textContent = sanitizedUploadFileName;
+        if (infoEl) {
+          infoEl.textContent = `${validated.width}×${validated.height} px ｜ ${(validated.blob.size / 1024).toFixed(1)} KB`;
+        }
+        if (previewBox) previewBox.classList.remove('hidden');
+        showAdminAlert('✓ 圖片通過前端 MIME (< 5MB) 與安全檔名檢核，已完成客戶端壓縮預覽。', false);
+      });
+    }
+
+    // Pre-upload File Validation for Replacement Photo inside Edit Modal
+    const editFileInput = document.getElementById('editPhotoFileInput');
+    if (editFileInput) {
+      editFileInput.addEventListener('change', async (e) => {
+        const file = e.target.files && e.target.files[0];
+        const statusEl = document.getElementById('editPhotoReplaceStatus');
+        const thumbEl = document.getElementById('editPhotoCurrentThumb');
+        if (!file) {
+          editReplacementBlob = null;
+          editReplacementDataUrl = null;
+          editReplacementFileName = '';
+          if (statusEl) statusEl.classList.add('hidden');
           return;
         }
 
-        // 2. Strict Size check (< 5MB)
-        if (file.size >= MAX_UPLOAD_SIZE_BYTES) {
-          fileInput.value = '';
-          showAdminAlert(
-            `資安攔截：檔案大小 (${(file.size / 1024 / 1024).toFixed(2)} MB) 超過 5MB 上限！`,
-            true
-          );
-          return;
-        }
+        const validated = await validateAndCompressFile(file, editFileInput);
+        if (!validated) return;
 
-        // 2.5. Strict Binary Magic Bytes verification (JPEG / PNG / WebP signature)
-        const validSignature = await verifyImageMagicBytes(file);
-        if (!validSignature) {
-          fileInput.value = '';
-          showAdminAlert(
-            '資安攔截：檔案二進位標頭 (Magic Bytes) 驗證失敗！禁止偽造副檔名之非圖檔上傳。',
-            true
-          );
-          return;
-        }
+        editReplacementFileName = validated.cleanName;
+        editReplacementBlob = validated.blob;
+        editReplacementDataUrl = validated.dataUrl;
 
-        // 3. Sanitize filename against Path Traversal & XSS
-        sanitizedUploadFileName = sanitizeFileName(file.name);
-
-        // 4. Client-side compression & preview
-        try {
-          const result = await compressAndPreviewImage(file);
-          compressedUploadBlob = result.blob;
-          compressedPreviewDataUrl = result.dataUrl;
-
-          const previewImg = document.getElementById('uploadPreviewImg');
-          const cleanNameEl = document.getElementById('uploadCleanName');
-          const infoEl = document.getElementById('uploadCompressedInfo');
-
-          if (previewImg) previewImg.src = result.dataUrl;
-          if (cleanNameEl) cleanNameEl.textContent = sanitizedUploadFileName;
-          if (infoEl) {
-            infoEl.textContent = `${result.width}×${result.height} px ｜ ${(result.blob.size / 1024).toFixed(1)} KB`;
-          }
-          if (previewBox) previewBox.classList.remove('hidden');
-          showAdminAlert('✓ 圖片通過前端 MIME (< 5MB) 與安全檔名檢核，已完成客戶端壓縮預覽。', false);
-        } catch (err) {
-          showAdminAlert('圖片解析失敗，請確認檔案為有效圖檔。', true);
+        if (thumbEl) thumbEl.src = validated.dataUrl;
+        if (statusEl) {
+          statusEl.textContent = `✓ 已準備替換為新圖檔：${validated.cleanName} (${validated.width}×${validated.height} px, ${(validated.blob.size / 1024).toFixed(1)} KB)`;
+          statusEl.classList.remove('hidden');
         }
       });
     }
@@ -927,41 +1326,87 @@
             });
             finalSrc = await storageRef.getDownloadURL();
 
-            const docRecord = {
-              id: newDocId,
-              order,
-              src: finalSrc,
-              storagePath,
-              category,
-              tag_zh,
-              tag_en,
-              title_zh,
-              title_en,
-              desc_zh,
-              desc_en,
-              updatedAt: new Date().toISOString(),
-              uploadedByUid: currentUser.uid
-            };
-
-            await firebaseDb.collection('gallery_photos').doc(newDocId).set(docRecord);
+            const docRecord = normalizePhotoForFirestore(
+              {
+                id: newDocId,
+                order,
+                src: finalSrc,
+                storagePath,
+                category,
+                tag_zh,
+                tag_en,
+                title_zh,
+                title_en,
+                desc_zh,
+                desc_en
+              },
+              order - 1,
+              currentUser.uid
+            );
 
             const updatedList = [...window.TCStorefrontGallery.getPhotos(), docRecord].sort(
               (a, b) => (a.order || 99) - (b.order || 99)
             );
+            updatedList.forEach((item, idx) => {
+              item.order = idx + 1;
+            });
+
+            // Sync entire active list (including default photos + new photo) to Firestore
+            const syncRes = await syncEntireGalleryListToFirestore(updatedList);
+            const finalPhotos = syncRes.synced ? syncRes.normalizedList : updatedList;
+
             try {
-              localStorage.setItem('tcstorefront_gallery_cache', JSON.stringify(updatedList));
+              localStorage.setItem('tcstorefront_gallery_cache', JSON.stringify(finalPhotos));
             } catch (e) {}
-            window.TCStorefrontGallery.updatePhotos(updatedList);
+            window.TCStorefrontGallery.updatePhotos(finalPhotos);
             renderAdminPhotoList();
-            showAdminAlert('✓ 已成功上傳至 Firebase Cloud Storage 並寫入 Firestore gallery_photos！', false);
+            showAdminAlert('✓ 已成功上傳新照片，並將完整前台照片清單同步至 Firebase Cloud！', false);
           } catch (err) {
             showAdminAlert(`雲端上傳失敗（請確認 Firebase Storage / Firestore 權限規則）：${err.message}`, true);
           }
         } else {
           showAdminAlert(
-            '請先展開上方「Firebase 雲端專案與管理員 UID 白名單設定」，完成連線與管理員登入後即可上傳雲端圖庫。',
+            '請先展開上方「Firebase 雲端連線金鑰輸入」，完成連線與管理員登入後即可上傳雲端圖庫。',
             true
           );
+        }
+      });
+    }
+
+    // Edit Photo Modal Buttons
+    const cancelEditBtn = document.getElementById('cancelEditPhotoBtn');
+    const saveEditBtn = document.getElementById('saveEditPhotoBtn');
+    if (cancelEditBtn) cancelEditBtn.addEventListener('click', closeEditPhotoModal);
+    if (saveEditBtn) saveEditBtn.addEventListener('click', saveEditedPhoto);
+
+    // Manual Cloud Sync Button
+    const syncCloudBtn = document.getElementById('syncCurrentListCloudBtn');
+    if (syncCloudBtn) {
+      syncCloudBtn.addEventListener('click', async () => {
+        const cfg = getRuntimeConfig();
+        if (!isUserAuthorizedAdmin(currentUser, cfg)) {
+          showAdminAlert('拒絕存取：請先通過 Firebase Auth 驗證且確認 UID 已列入白名單！', true);
+          return;
+        }
+        if (!window.TCStorefrontGallery) return;
+        const currentList = window.TCStorefrontGallery.getPhotos();
+        syncCloudBtn.disabled = true;
+        syncCloudBtn.textContent = '☁️ 同步中...';
+        try {
+          const res = await syncEntireGalleryListToFirestore(currentList);
+          if (res.synced) {
+            try {
+              localStorage.setItem('tcstorefront_gallery_cache', JSON.stringify(res.normalizedList));
+            } catch (e) {}
+            window.TCStorefrontGallery.updatePhotos(res.normalizedList);
+            renderAdminPhotoList();
+            showAdminAlert(`✓ 已成功將目前前台展示照片清單（共 ${res.count} 張）完整同步發布至 Firebase 雲端！`, false);
+          }
+        } catch (err) {
+          showAdminAlert(`雲端同步失敗：${err.message}`, true);
+        } finally {
+          syncCloudBtn.disabled = false;
+          syncCloudBtn.textContent = '☁️ 同步發布目前清單至雲端';
         }
       });
     }
@@ -973,20 +1418,33 @@
 
     const resetBtn = document.getElementById('resetDefaultPhotosBtn');
     if (resetBtn) {
-      resetBtn.addEventListener('click', () => {
+      resetBtn.addEventListener('click', async () => {
         const cfg = getRuntimeConfig();
         if (!isUserAuthorizedAdmin(currentUser, cfg)) {
           showAdminAlert('拒絕存取：請先通過 Firebase Auth 驗證且確認 UID 已列入白名單！', true);
           return;
         }
         if (!window.TCStorefrontGallery) return;
-        const defaults = window.TCStorefrontGallery.getDefaultPhotos();
+        const defaults = window.TCStorefrontGallery.getDefaultPhotos().map((p, i) => ({
+          ...p,
+          order: i + 1
+        }));
         try {
           localStorage.removeItem('tcstorefront_gallery_cache');
         } catch (e) {}
         window.TCStorefrontGallery.updatePhotos(defaults);
         renderAdminPhotoList();
-        showAdminAlert('✓ 已還原為預設 7 張店面實景照片。', false);
+
+        try {
+          const syncRes = await syncEntireGalleryListToFirestore(defaults);
+          if (syncRes.synced) {
+            showAdminAlert('✓ 已還原為預設 7 張店面實景照片並同步更新至 Firebase 雲端。', false);
+          } else {
+            showAdminAlert('✓ 已還原為預設 7 張店面實景照片。', false);
+          }
+        } catch (err) {
+          showAdminAlert(`已還原本機預設 7 張照片，但雲端同步失敗：${err.message}`, true);
+        }
       });
     }
   }

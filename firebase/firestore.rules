@@ -20,7 +20,7 @@ service cloud.firestore {
         && data.keys().hasOnly(allowedKeys)
         && data.order is int && data.order >= 0 && data.order <= 9999
         && data.src is string && data.src.size() > 0 && data.src.size() <= 1024
-        && data.src.matches('^(https://firebasestorage\\.googleapis\\.com/|\\./assets/).*')
+        && data.src.matches('^(https://firebasestorage\\.googleapis\\.com/|https://[a-zA-Z0-9_-]+\\.firebasestorage\\.app/|\\./assets/).*')
         && data.category in ['interior', 'exterior']
         && data.title_zh is string && data.title_zh.size() <= 120
         && data.title_en is string && data.title_en.size() <= 120
