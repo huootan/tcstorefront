@@ -63,16 +63,16 @@
       longterm: {
         badge: '主推方案 · 企業展店首選',
         title: 'Option 01｜長期旗艦進駐（連鎖品牌／診所／大型餐飲零售）',
-        price: 'NT$ 120,000 / 月（含稅＋含每月 $8,050 管理費）',
+        price: 'NT$ 100,000 / 月（含稅由房東付・管理費 $8,050 由租客付）',
         summary:
-          '一般店面月租 12 萬若外加 10% 租賃稅（$12,000）與管理費（$8,050），企業每月實際支出高達 $140,050！本物件由屋主直接吸收稅金與管理費，簽約滿 5 年再享前 3 個月免租裝潢期。',
+          '一般店面月租若外加 10% 租賃稅，企業每月需額外多付 $10,000 稅金！本物件月租 NT$ 100,000 由房東直接吸收稅金（管理費每月 $8,050 由租客負擔），簽約滿 5 年再享前 3 個月免租裝潢期。',
         metrics: [
-          { label: '扣除管理費後實質月租', value: 'NT$ 111,950 / 月', sub: '管理費每月 $8,050 由屋主負擔' },
-          { label: '發票與報稅條件', value: '含稅價（可正式營登）', sub: '幫企業省下 10% 租賃稅額外支出' },
-          { label: '5 年長約免租期優惠', value: '前 3 個月免收租金', sub: '直接幫企業省下 NT$ 360,000 裝潢期房租' }
+          { label: '長租月租金（含稅）', value: 'NT$ 100,000 / 月', sub: '租賃稅金由房東負擔（可正式營登）' },
+          { label: '社區管理費條件', value: 'NT$ 8,050 / 月', sub: '管理費由租客負擔（每月另計）' },
+          { label: '5 年長約免租期優惠', value: '前 3 個月免收租金', sub: '直接幫企業省下 NT$ 300,000 裝潢期房租' }
         ],
         bullets: [
-          '押金僅需 2 個月（NT$ 240,000），大幅減輕企業初期資金壓力。',
+          '押金僅需 2 個月（NT$ 200,000），大幅減輕企業初期資金壓力。',
           'B-3 一般零售業使用執照，具備三相電、天然氣、排煙排水系統與專屬卸貨區。',
           '距離機車停車場 20 公尺、青山汽車停車場 30 公尺，正對青山廣場公園，自帶穩定家庭與休閒客源。'
         ]
@@ -132,16 +132,16 @@
       longterm: {
         badge: 'FLAGSHIP CHOICE · BEST VALUE FOR CHAINS',
         title: 'Option 01｜Long-Term Flagship Lease (Chain Retail / Clinic / F&B)',
-        price: 'NT$ 120,000 / mo (Tax & NT$8,050 Mgmt Fee Included)',
+        price: 'NT$ 100,000 / mo (Tax Included · NT$8,050 Mgmt Fee Paid by Tenant)',
         summary:
-          'In standard commercial leases, a NT$120K base rent plus 10% rental tax (NT$12K) and management fee (NT$8,050) actually costs the tenant NT$140,050/month! Here, the owner covers both tax and management fees—plus a 5-year lease includes a 3-month rent-free fit-out period.',
+          'In standard commercial leases, a 10% rental tax is added on top of base rent! Here, the NT$100,000/mo rent is tax-inclusive (tax covered by landlord; NT$8,050/mo management fee paid by tenant)—plus a 5-year lease includes a 3-month rent-free fit-out period.',
         metrics: [
-          { label: 'Effective Net Rent (Ex-Mgmt)', value: 'NT$ 111,950 / mo', sub: 'Owner covers the NT$8,050/mo management fee' },
-          { label: 'Tax & Business Registration', value: 'Tax-Inclusive', sub: 'Saves corporate tenants 10% rental tax' },
-          { label: '5-Year Lease Incentive', value: '3 Months Rent-Free Fit-Out', sub: 'Saves NT$ 360,000 during your renovation period' }
+          { label: 'Monthly Base Rent (Tax-In)', value: 'NT$ 100,000 / mo', sub: 'Rental tax covered by landlord (Official Reg. ready)' },
+          { label: 'Community Management Fee', value: 'NT$ 8,050 / mo', sub: 'Paid by tenant (billed monthly)' },
+          { label: '5-Year Lease Incentive', value: '3 Months Rent-Free Fit-Out', sub: 'Saves NT$ 300,000 during your renovation period' }
         ],
         bullets: [
-          'Only 2 months security deposit (NT$ 240,000), preserving your working capital.',
+          'Only 2 months security deposit (NT$ 200,000), preserving your working capital.',
           'B-3 General Retail Occupancy Permit with 3-phase power, natural gas, exhaust/drainage, and loading zone.',
           'Just 20m to scooter parking and 30m to Qingshan Car Park, directly facing Qingshan Plaza Park.'
         ]
@@ -632,7 +632,7 @@
       '📍 地址：新北市土城區青雲路 341 號 1F（正對青山廣場公園）',
       '📐 坪數尺度：總坪數 80 坪（264.5 m²）／ 室內實坪 47.7 坪（157.7 m²），面寬 9 公尺 × 深度約 15 公尺 × 挑高 4.6 公尺',
       '🏛️ 使用執照：B-3 一般零售業使用執照（可正式辦理營業登記）',
-      '💰 長租條件：月租 NT$ 120,000 元（含稅及每月 8,050 元管理費）、押金 2 個月、5 年長約享前 3 個月免租裝潢期',
+      '💰 長租條件：月租 NT$ 100,000 元（含稅由房東負擔；管理費每月 8,050 元由租客負擔）、押金 2 個月、5 年長約享前 3 個月免租裝潢期',
       '⚡ 短租快閃方案：1~3 個月短期快閃／特賣會、單日活動展演皆可（租金專案另洽）',
       '🔧 硬體設備：三相電、天然氣、排煙排水系統、專屬卸貨區',
       '🚗 停車與交通：機車停車場 20m、青山汽車停車場 30m；門口公車直達捷運海山站，步行可達未來萬大線 LG10 站',
@@ -645,7 +645,7 @@
       '📍 Address: 1F, No. 341, Qingyun Rd., Tucheng Dist., New Taipei City (Directly facing Qingshan Park)',
       '📐 Dimensions: Gross 80 Ping (264.5 sq.m.) / Net Interior 47.7 Ping (157.7 sq.m.) | 9m Width × 15m Depth × 4.6m Ceiling',
       '🏛️ Permit: B-3 General Retail Occupancy Permit (Official business registration ready)',
-      '💰 Long-Term Lease: NT$ 120,000/mo (Tax & NT$8,050/mo management fee included), 2-month deposit; 5-year lease includes a 3-month rent-free fit-out period',
+      '💰 Long-Term Lease: NT$ 100,000/mo (Tax covered by landlord; NT$8,050/mo management fee paid by tenant), 2-month deposit; 5-year lease includes a 3-month rent-free fit-out period',
       '⚡ Short-Term & Pop-Up Options: 1–3 months pop-up or single-day events available (Contact for Quote)',
       '🔧 Infrastructure: 3-phase power, natural gas, exhaust & drainage systems, dedicated loading zone',
       '🚗 Parking & Transit: 20m to scooter parking, 30m to Qingshan Car Park; bus at doorstep to Haishan MRT Station',

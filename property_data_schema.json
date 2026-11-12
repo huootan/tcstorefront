@@ -26,16 +26,17 @@
       "zoning_permit_en": "B-3 General Retail Occupancy Permit (Official business registration ready)"
     },
     "long_term_lease": {
-      "monthly_rent_twd": 120000,
+      "monthly_rent_twd": 100000,
       "tax_included": true,
-      "management_fee_included": true,
+      "tax_paid_by": "landlord (房東負擔)",
+      "management_fee_included": false,
+      "management_fee_paid_by": "tenant (租客負擔)",
       "monthly_management_fee_twd": 8050,
-      "effective_net_rent_twd": 111950,
       "deposit_months": 2,
-      "deposit_amount_twd": 240000,
+      "deposit_amount_twd": 200000,
       "incentive_lease_years": 5,
       "rent_free_fit_out_months": 3,
-      "rent_free_savings_twd": 360000
+      "rent_free_savings_twd": 300000
     },
     "short_term_options": {
       "pop_up_1_to_3_months_pricing": "專案另洽 (Contact for Quote)",
